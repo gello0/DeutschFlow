@@ -1,3 +1,4 @@
+
 export enum DifficultyLevel {
   Beginner = 'Beginner (A1/A2)',
   Intermediate = 'Intermediate (B1/B2)',
@@ -44,11 +45,17 @@ export interface Scenario {
   initialMessage: string;
 }
 
+export interface SentencePuzzle {
+  german: string;
+  english: string;
+}
+
 export enum AppView {
   Vocab = 'vocab',
   Chat = 'chat',
   Journal = 'journal',
   Drills = 'drills',
   Numbers = 'numbers',
+  SentenceBuilder = 'sentence_builder',
   Settings = 'settings'
 }

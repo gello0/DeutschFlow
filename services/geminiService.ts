@@ -1,7 +1,7 @@
 import { GoogleGenAI, Type, Modality, GenerateContentResponse } from "@google/genai";
-import { VocabWord, DifficultyLevel, ChatMessage, VerbDrill } from "../types";
+import { VocabWord, DifficultyLevel, ChatMessage, VerbDrill, SentencePuzzle } from "../types";
 import { decodeBase64, decodeAudioData, playAudioBuffer } from "./audioUtils";
-import { LOCAL_VOCAB, LOCAL_VERBS } from "../data/fallbackData";
+import { LOCAL_VOCAB, LOCAL_VERBS, LOCAL_SENTENCES } from "../data/fallbackData";
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
@@ -205,17 +205,12 @@ export const correctJournalEntry = async (text: string): Promise<{ corrected: st
 // 4. Conjugation Drill Generator (Hybrid: Local First)
 export const generateVerbDrill = async (level: DifficultyLevel): Promise<VerbDrill | null> => {
   try {
-    // A. Check Local Database First (Simple Random Logic)
-    // In a real app, we might track which verbs the user has already mastered.
-    // For now, picking a random local verb is much faster than AI.
     if (LOCAL_VERBS.length > 0) {
         console.log("Serving Verb Drill from Local DB");
         const randomIndex = Math.floor(Math.random() * LOCAL_VERBS.length);
         return LOCAL_VERBS[randomIndex];
     }
 
-    // B. AI Fallback
-    console.log("Local Verbs exhausted/skipped, calling AI...");
     const prompt = `Generate a single German verb conjugation exercise for a student at level: ${level}.
     - Pick a common verb appropriate for this level.
     - Choose a tense (Präsens, Präteritum, or Perfekt) appropriate for this level.
@@ -259,13 +254,53 @@ export const generateVerbDrill = async (level: DifficultyLevel): Promise<VerbDri
 
   } catch (error) {
     console.error("Drill generation error:", error);
-    // Hard fallback if everything fails
     return LOCAL_VERBS[0] || null;
   }
 };
 
+// 5. Sentence Puzzle Generator (Hybrid: Local First)
+export const generateSentencePuzzle = async (level: DifficultyLevel): Promise<SentencePuzzle | null> => {
+  try {
+     // A. Local Fallback (50% chance or if error)
+     if (Math.random() > 0.6) {
+        const randomIndex = Math.floor(Math.random() * LOCAL_SENTENCES.length);
+        return LOCAL_SENTENCES[randomIndex];
+     }
 
-// 5. Text to Speech (AI Only - Media Gen)
+     // B. AI Generation
+     const prompt = `Generate a German sentence appropriate for ${level} level. 
+     Return a JSON object with:
+     - german: The sentence in German.
+     - english: The English translation.
+     Keep the sentence between 4 and 10 words long.`;
+
+     const response = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: prompt,
+        config: {
+            responseMimeType: "application/json",
+            responseSchema: {
+                type: Type.OBJECT,
+                properties: {
+                    german: { type: Type.STRING },
+                    english: { type: Type.STRING }
+                },
+                required: ["german", "english"]
+            }
+        }
+     });
+
+     const jsonText = response.text;
+     if (!jsonText) return LOCAL_SENTENCES[0];
+     return JSON.parse(jsonText) as SentencePuzzle;
+
+  } catch (e) {
+      console.error("Sentence gen error", e);
+      return LOCAL_SENTENCES[0];
+  }
+}
+
+// 6. Text to Speech (AI Only - Media Gen)
 let audioContext: AudioContext | null = null;
 
 export const speakText = async (text: string) => {

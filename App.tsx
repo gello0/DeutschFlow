@@ -8,6 +8,7 @@ import Journal from './components/Journal';
 import ConjugationDrill from './components/ConjugationDrill';
 import NumberGame from './components/NumberGame';
 import GrammarGuide from './components/GrammarGuide';
+import SentenceBuilder from './components/SentenceBuilder';
 
 const SESSION_SIZE = 15; // Learning Chunk Size
 
@@ -230,6 +231,12 @@ const App: React.FC = () => {
                     >
                        🔄 Verb Drills
                     </button>
+                     <button 
+                      onClick={() => setCurrentView(AppView.SentenceBuilder)}
+                      className="flex-shrink-0 bg-indigo-50 dark:bg-indigo-900/10 border border-indigo-100 dark:border-indigo-800 px-4 py-3 rounded-xl flex items-center gap-2 text-indigo-700 dark:text-indigo-300 text-sm font-bold"
+                    >
+                       🧩 Sentence Builder
+                    </button>
                 </div>
 
                 {/* 3. STUDY BY TOPIC */}
@@ -393,6 +400,14 @@ const App: React.FC = () => {
       );
     }
 
+    if (currentView === AppView.SentenceBuilder) {
+      return (
+        <div className="h-full pt-4 pb-24">
+          <SentenceBuilder level={level} />
+        </div>
+      );
+    }
+
     if (currentView === AppView.Numbers) {
       return (
         <div className="h-full pt-4 pb-24">
@@ -454,7 +469,7 @@ const App: React.FC = () => {
            </div>
 
            <div className="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800">
-             <p className="text-xs text-gray-400 text-center">DeutschFlow v1.8 • Powered by Gemini</p>
+             <p className="text-xs text-gray-400 text-center">DeutschFlow v1.9 • Powered by Gemini</p>
            </div>
          </div>
        </div>
@@ -521,13 +536,13 @@ const App: React.FC = () => {
           </button>
 
           <button 
-            onClick={() => setCurrentView(AppView.Numbers)}
-            className={`flex flex-col items-center gap-1 transition-colors ${currentView === AppView.Numbers ? 'text-black dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}
+            onClick={() => setCurrentView(AppView.SentenceBuilder)}
+            className={`flex flex-col items-center gap-1 transition-colors ${currentView === AppView.SentenceBuilder ? 'text-black dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
             </svg>
-            <span className="text-[10px] font-medium">Numbers</span>
+            <span className="text-[10px] font-medium">Build</span>
           </button>
 
           <button 

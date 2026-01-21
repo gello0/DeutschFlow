@@ -1,4 +1,4 @@
-import { VocabWord, VerbDrill, DifficultyLevel } from "../types";
+import { VocabWord, VerbDrill, DifficultyLevel, SentencePuzzle } from "../types";
 
 // Extended interface for local DB
 interface LocalVocabEntry extends VocabWord {
@@ -1036,4 +1036,20 @@ export const LOCAL_VERBS: VerbDrill[] = [
     infinitive: "treffen", translation: "to meet", tense: "Präsens", tip: "Vowel change e -> i",
     conjugations: { ich: "treffe", du: "triffst", er_sie_es: "trifft", wir: "treffen", ihr: "trefft", sie_Sie: "treffen" }
   }
+];
+
+// ---------------------------------------------------------------------------
+// 4. SENTENCE PUZZLES (Fallback)
+// ---------------------------------------------------------------------------
+export const LOCAL_SENTENCES: SentencePuzzle[] = [
+  { german: "Ich gehe heute ins Kino.", english: "I am going to the cinema today." },
+  { german: "Der Hund spielt im Garten.", english: "The dog is playing in the garden." },
+  { german: "Wir trinken gerne Kaffee.", english: "We like drinking coffee." },
+  { german: "Sie kauft ein neues Kleid.", english: "She is buying a new dress." },
+  { german: "Das Wetter ist heute sehr schön.", english: "The weather is very nice today." },
+  { german: "Kannst du mir helfen?", english: "Can you help me?" },
+  { german: "Ich habe keinen Hunger.", english: "I am not hungry." },
+  { german: "Er wohnt in Berlin.", english: "He lives in Berlin." },
+  { german: "Die Kinder gehen zur Schule.", english: "The children are going to school." },
+  { german: "Ich möchte ein Bier bestellen.", english: "I would like to order a beer." }
 ];
