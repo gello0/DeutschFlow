@@ -94,28 +94,28 @@ const Journal: React.FC<JournalProps> = ({ level }) => {
       {/* Header Section */}
       <div className="flex items-end justify-between mb-6 pt-2">
         <div>
-           <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Dein Tagebuch</h2>
-           <p className="text-gray-400 font-medium">
+           <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Dein Tagebuch</h2>
+           <p className="text-gray-400 dark:text-gray-500 font-medium">
              {new Date().toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' })}
            </p>
         </div>
-        <div className="px-3 py-1 bg-gray-200 rounded-full text-xs font-semibold text-gray-600 uppercase tracking-wide">
+        <div className="px-3 py-1 bg-gray-200 dark:bg-gray-800 rounded-full text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">
           {level}
         </div>
       </div>
 
       {/* Main Editor Card */}
-      <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden flex flex-col min-h-[300px] transition-all relative z-10">
+      <div className="bg-white dark:bg-[#1e1e1e] rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-800 overflow-hidden flex flex-col min-h-[300px] transition-all relative z-10">
         <textarea
           value={entry}
           onChange={(e) => setEntry(e.target.value)}
           placeholder="Worüber denkst du nach? (Schreib einfach drauf los...)"
-          className="flex-1 w-full p-8 text-xl text-gray-900 placeholder:text-gray-400 bg-transparent resize-none focus:outline-none leading-9 font-medium"
+          className="flex-1 w-full p-8 text-xl text-gray-900 dark:text-gray-100 placeholder:text-gray-400 bg-transparent resize-none focus:outline-none leading-9 font-medium"
           spellCheck={false}
         />
         
         {/* Suggestion & Toolbar Area */}
-        <div className="bg-gray-50/80 backdrop-blur-sm border-t border-gray-100 p-4 flex items-center justify-between">
+        <div className="bg-gray-50/80 dark:bg-[#252525] backdrop-blur-sm border-t border-gray-100 dark:border-gray-800 p-4 flex items-center justify-between">
            
            {/* Left: AI Suggestions */}
            <div className="flex-1 flex items-center h-8">
@@ -132,10 +132,10 @@ const Journal: React.FC<JournalProps> = ({ level }) => {
                   onClick={handleApplySuggestion}
                   className={`group flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-semibold transition-all shadow-sm hover:shadow-md cursor-pointer border
                   ${suggestion.type === 'translation' 
-                    ? 'bg-blue-50 text-blue-600 border-blue-100 hover:bg-blue-100' 
+                    ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 border-blue-100 dark:border-blue-800 hover:bg-blue-100' 
                     : suggestion.type === 'prediction'
-                    ? 'bg-amber-50 text-amber-700 border-amber-100 hover:bg-amber-100'
-                    : 'bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-100'
+                    ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-100 dark:border-amber-800 hover:bg-amber-100'
+                    : 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-300 border-emerald-100 dark:border-emerald-800 hover:bg-emerald-100'
                   }`}
                 >
                   <span className="opacity-50 text-xs uppercase tracking-wider">
@@ -147,7 +147,7 @@ const Journal: React.FC<JournalProps> = ({ level }) => {
                   </svg>
                 </button>
               ) : (
-                <span className="text-gray-300 text-sm italic pl-2">Start typing for AI suggestions...</span>
+                <span className="text-gray-300 dark:text-gray-600 text-sm italic pl-2">Start typing for AI suggestions...</span>
               )}
            </div>
 
@@ -158,15 +158,15 @@ const Journal: React.FC<JournalProps> = ({ level }) => {
                 disabled={!entry.trim() || isCorrecting}
                 className={`flex items-center gap-2 px-6 py-2 rounded-xl font-bold text-sm transition-all
                   ${!entry.trim() 
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                    ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed' 
                     : isCorrecting 
-                    ? 'bg-gray-800 text-white cursor-wait'
-                    : 'bg-black text-white hover:bg-gray-800 hover:scale-105 active:scale-95 shadow-lg'
+                    ? 'bg-gray-800 dark:bg-gray-700 text-white cursor-wait'
+                    : 'bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 hover:scale-105 active:scale-95 shadow-lg'
                   }`}
               >
                 {isCorrecting ? 'Checking...' : 'Check & Polish'}
                 {!isCorrecting && (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-german-gold" viewBox="0 0 20 20" fill="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-german-gold dark:text-black" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                 )}
@@ -177,7 +177,7 @@ const Journal: React.FC<JournalProps> = ({ level }) => {
 
       {/* History List */}
       <div className="mt-12 pb-24">
-         <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+         <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -185,17 +185,17 @@ const Journal: React.FC<JournalProps> = ({ level }) => {
          </h3>
          
          {history.length === 0 ? (
-           <div className="text-center py-12 bg-white rounded-2xl border border-dashed border-gray-200">
+           <div className="text-center py-12 bg-white dark:bg-[#1e1e1e] rounded-2xl border border-dashed border-gray-200 dark:border-gray-800">
               <p className="text-gray-400">No entries yet. Write something above!</p>
            </div>
          ) : (
            <div className="space-y-4">
              {history.map((item) => (
-                <div key={item.id} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                <div key={item.id} className="bg-white dark:bg-[#1e1e1e] p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow">
                    <div className="text-xs font-semibold text-german-gold uppercase tracking-wider mb-3">
                       {item.date.toLocaleDateString('de-DE')} • {item.date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                    </div>
-                   <p className="text-gray-800 leading-relaxed font-serif text-lg">{item.text}</p>
+                   <p className="text-gray-800 dark:text-gray-200 leading-relaxed font-serif text-lg">{item.text}</p>
                 </div>
              ))}
            </div>
@@ -205,11 +205,11 @@ const Journal: React.FC<JournalProps> = ({ level }) => {
       {/* Correction Modal Overlay */}
       {correctionData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm animate-in fade-in duration-200">
-           <div className="bg-white w-full max-w-4xl max-h-[90vh] flex flex-col rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+           <div className="bg-white dark:bg-[#1e1e1e] w-full max-w-4xl max-h-[90vh] flex flex-col rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 border dark:border-gray-800">
               
-              <div className="bg-gray-50 p-6 border-b border-gray-100 flex justify-between items-center flex-shrink-0">
-                 <h3 className="text-xl font-bold text-gray-900">Review & Polish</h3>
-                 <button onClick={() => setCorrectionData(null)} className="text-gray-400 hover:text-gray-600 transition-colors">
+              <div className="bg-gray-50 dark:bg-[#252525] p-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center flex-shrink-0">
+                 <h3 className="text-xl font-bold text-gray-900 dark:text-white">Review & Polish</h3>
+                 <button onClick={() => setCorrectionData(null)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -221,41 +221,41 @@ const Journal: React.FC<JournalProps> = ({ level }) => {
                 <div className="grid md:grid-cols-2 gap-8">
                    <div className="space-y-2 flex flex-col">
                       <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Original</label>
-                      <div className="p-4 bg-gray-50 rounded-xl text-gray-600 leading-relaxed border border-gray-100 flex-grow whitespace-pre-wrap">
+                      <div className="p-4 bg-gray-50 dark:bg-[#2d2d2d] rounded-xl text-gray-600 dark:text-gray-300 leading-relaxed border border-gray-100 dark:border-gray-700 flex-grow whitespace-pre-wrap">
                          {entry}
                       </div>
                    </div>
                    <div className="space-y-2 flex flex-col">
-                      <label className="text-xs font-bold text-green-600 uppercase tracking-wider flex items-center gap-1">
+                      <label className="text-xs font-bold text-green-600 dark:text-green-400 uppercase tracking-wider flex items-center gap-1">
                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                          </svg>
                          Polished Version
                       </label>
-                      <div className="p-4 bg-green-50/50 rounded-xl text-gray-900 font-medium leading-relaxed border border-green-100 flex-grow shadow-inner whitespace-pre-wrap">
+                      <div className="p-4 bg-green-50/50 dark:bg-green-900/10 rounded-xl text-gray-900 dark:text-green-100 font-medium leading-relaxed border border-green-100 dark:border-green-900/30 flex-grow shadow-inner whitespace-pre-wrap">
                          {correctionData.corrected}
                       </div>
                    </div>
                 </div>
 
                 {/* Explanation Section */}
-                <div className="bg-blue-50/50 rounded-2xl p-6 border border-blue-100">
-                    <h4 className="text-sm font-bold text-blue-800 uppercase tracking-wide mb-3 flex items-center gap-2">
+                <div className="bg-blue-50/50 dark:bg-blue-900/10 rounded-2xl p-6 border border-blue-100 dark:border-blue-900/20">
+                    <h4 className="text-sm font-bold text-blue-800 dark:text-blue-300 uppercase tracking-wide mb-3 flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         Analysis & Feedback
                     </h4>
-                    <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
                         {correctionData.explanation}
                     </p>
                 </div>
               </div>
 
-              <div className="p-6 bg-gray-50 border-t border-gray-100 flex gap-4 flex-shrink-0">
+              <div className="p-6 bg-gray-50 dark:bg-[#252525] border-t border-gray-100 dark:border-gray-800 flex gap-4 flex-shrink-0">
                  <button 
                     onClick={() => setCorrectionData(null)}
-                    className="flex-1 py-3 rounded-xl font-semibold text-gray-600 hover:bg-gray-200 transition-colors"
+                    className="flex-1 py-3 rounded-xl font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                  >
                     Keep Editing
                  </button>

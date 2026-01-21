@@ -104,29 +104,29 @@ const NumberGame: React.FC<NumberGameProps> = ({ level }) => {
       {/* Header / Streak */}
       <div className="w-full flex justify-between items-center mb-12">
          <div className="flex flex-col">
-            <h2 className="text-2xl font-bold text-gray-900">Zahlenraten</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Zahlenraten</h2>
             <span className="text-gray-400 text-sm">Number Guessing</span>
          </div>
-         <div className="flex items-center gap-2 bg-orange-50 px-3 py-1 rounded-full border border-orange-100">
+         <div className="flex items-center gap-2 bg-orange-50 dark:bg-orange-900/20 px-3 py-1 rounded-full border border-orange-100 dark:border-orange-800">
             <span className="text-xl">🔥</span>
-            <span className="font-bold text-orange-600">{streak}</span>
+            <span className="font-bold text-orange-600 dark:text-orange-400">{streak}</span>
          </div>
       </div>
 
       {/* Main Card */}
-      <div className="w-full bg-white rounded-3xl shadow-xl border border-gray-100 p-8 text-center flex flex-col items-center justify-center min-h-[300px] relative overflow-hidden">
+      <div className="w-full bg-white dark:bg-[#1e1e1e] rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800 p-8 text-center flex flex-col items-center justify-center min-h-[300px] relative overflow-hidden">
          
          <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Schreib die Zahl</p>
          
          {/* German Word Display */}
-         <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6 leading-tight break-words w-full">
+         <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-6 leading-tight break-words w-full">
             {germanText}
          </h1>
 
          {/* Audio Button */}
          <button 
            onClick={() => speakText(germanText)}
-           className="mb-8 p-4 rounded-full bg-german-gold/10 hover:bg-german-gold/20 text-yellow-700 transition-colors shadow-sm active:scale-95"
+           className="mb-8 p-4 rounded-full bg-german-gold/10 hover:bg-german-gold/20 text-yellow-700 dark:text-yellow-500 transition-colors shadow-sm active:scale-95"
          >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
@@ -143,14 +143,14 @@ const NumberGame: React.FC<NumberGameProps> = ({ level }) => {
               onKeyDown={handleKeyDown}
               placeholder="123"
               className={`w-full text-center text-3xl font-bold py-4 rounded-2xl border-2 outline-none transition-all shadow-sm
-                 ${status === 'correct' ? 'border-green-500 bg-green-50 text-green-900' 
-                 : status === 'wrong' ? 'border-red-500 bg-red-50 text-red-900' 
-                 : 'border-gray-200 focus:border-german-gold focus:ring-4 focus:ring-german-gold/20'}`}
+                 ${status === 'correct' ? 'border-green-500 bg-green-50 dark:bg-green-900/30 text-green-900 dark:text-green-300' 
+                 : status === 'wrong' ? 'border-red-500 bg-red-50 dark:bg-red-900/30 text-red-900 dark:text-red-300' 
+                 : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-[#2d2d2d] text-gray-900 dark:text-white focus:border-german-gold focus:ring-4 focus:ring-german-gold/20'}`}
               autoFocus
             />
             {status === 'wrong' && (
                 <div className="absolute top-full left-0 w-full text-center mt-2 animate-in slide-in-from-top-2">
-                    <span className="text-red-500 font-bold">Answer: {currentNumber}</span>
+                    <span className="text-red-500 dark:text-red-400 font-bold">Answer: {currentNumber}</span>
                 </div>
             )}
          </div>
@@ -160,7 +160,7 @@ const NumberGame: React.FC<NumberGameProps> = ({ level }) => {
       <button 
          onClick={status === 'idle' ? checkAnswer : generateNumber}
          className={`mt-8 w-full max-w-xs py-4 rounded-xl font-bold text-lg shadow-lg transition-transform active:scale-95
-            ${status === 'idle' ? 'bg-german-black text-white hover:bg-gray-800' 
+            ${status === 'idle' ? 'bg-german-black dark:bg-gray-700 text-white hover:bg-gray-800' 
             : status === 'correct' ? 'bg-green-500 text-white' 
             : 'bg-red-500 text-white'}`}
       >

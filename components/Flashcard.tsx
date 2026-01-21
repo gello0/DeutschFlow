@@ -49,10 +49,10 @@ const Flashcard: React.FC<FlashcardProps> = ({ word, onResult, isFavorite, onTog
 
   const getGenderColor = (gender: string) => {
     switch (gender) {
-      case 'der': return 'text-blue-600 bg-blue-50';
-      case 'die': return 'text-red-600 bg-red-50';
-      case 'das': return 'text-green-600 bg-green-50';
-      default: return 'text-gray-600 bg-gray-50';
+      case 'der': return 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30';
+      case 'die': return 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30';
+      case 'das': return 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30';
+      default: return 'text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800';
     }
   };
 
@@ -64,7 +64,7 @@ const Flashcard: React.FC<FlashcardProps> = ({ word, onResult, isFavorite, onTog
       <div className={`relative w-full h-full text-center transition-transform transform-style-3d card-inner ${isFlipped ? 'flipped' : ''}`}>
         
         {/* Front of Card */}
-        <div className="absolute w-full h-full bg-white rounded-2xl shadow-xl flex flex-col justify-center items-center p-6 border border-gray-100 card-front backface-hidden">
+        <div className="absolute w-full h-full bg-white dark:bg-[#1e1e1e] dark:border-gray-800 rounded-2xl shadow-xl flex flex-col justify-center items-center p-6 border border-gray-100 card-front backface-hidden">
           {/* Favorite Button */}
           <button
              onClick={(e) => { e.stopPropagation(); onToggleFavorite(word); }}
@@ -84,15 +84,15 @@ const Flashcard: React.FC<FlashcardProps> = ({ word, onResult, isFavorite, onTog
           <span className={`text-xs uppercase tracking-widest mb-4 px-2 py-1 rounded ${getGenderColor(word.gender)}`}>
             {word.type}
           </span>
-          <h2 className="text-4xl font-bold text-gray-800 mb-2">
-            {word.gender && <span className="text-2xl font-normal text-gray-400 mr-2">{word.gender}</span>}
+          <h2 className="text-4xl font-bold text-gray-800 dark:text-white mb-2">
+            {word.gender && <span className="text-2xl font-normal text-gray-400 dark:text-gray-500 mr-2">{word.gender}</span>}
             {word.german}
           </h2>
-          <p className="text-gray-400 mt-4 text-sm">(Tap to flip)</p>
+          <p className="text-gray-400 dark:text-gray-500 mt-4 text-sm">(Tap to flip)</p>
           
           <button 
             onClick={(e) => handleAudio(e, word.german)}
-            className="absolute bottom-6 right-6 p-3 rounded-full bg-german-gold/10 hover:bg-german-gold/30 text-yellow-700 transition-colors"
+            className="absolute bottom-6 right-6 p-3 rounded-full bg-german-gold/10 hover:bg-german-gold/30 text-yellow-700 dark:text-yellow-500 transition-colors"
             title="Listen to word"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -102,7 +102,7 @@ const Flashcard: React.FC<FlashcardProps> = ({ word, onResult, isFavorite, onTog
         </div>
 
         {/* Back of Card */}
-        <div className="absolute w-full h-full bg-slate-900 text-white rounded-2xl shadow-xl flex flex-col justify-center items-center p-6 card-back backface-hidden">
+        <div className="absolute w-full h-full bg-slate-900 dark:bg-black text-white rounded-2xl shadow-xl flex flex-col justify-center items-center p-6 card-back backface-hidden border dark:border-gray-800">
           <h3 className="text-2xl font-bold text-german-gold mb-6">{word.english}</h3>
           
           <div className="w-full text-left bg-white/10 p-4 rounded-lg">

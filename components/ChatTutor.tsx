@@ -131,22 +131,22 @@ const ChatTutor: React.FC<ChatTutorProps> = ({ level }) => {
 
   if (mode === 'menu') {
       return (
-          <div className="flex flex-col h-[calc(100vh-200px)] bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-            <div className="bg-german-black text-white p-4 text-center z-10">
+          <div className="flex flex-col h-[calc(100vh-200px)] bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
+            <div className="bg-german-black text-white p-4 text-center z-10 border-b border-gray-800">
                 <h2 className="font-semibold text-lg">AI Roleplay Tutor</h2>
                 <p className="text-xs text-gray-400">Choose a situation to practice</p>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-6 bg-gray-50">
+            <div className="flex-1 overflow-y-auto p-6 bg-gray-50 dark:bg-[#121212]">
                 <div className="grid gap-4">
                     <button
                     onClick={() => startChat(null)}
-                    className="p-4 rounded-xl border-2 border-dashed border-gray-300 bg-white text-left transition-all hover:border-german-gold hover:bg-yellow-50 flex items-center gap-4 group"
+                    className="p-4 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-700 bg-white dark:bg-[#252525] text-left transition-all hover:border-german-gold dark:hover:border-german-gold hover:bg-yellow-50 dark:hover:bg-yellow-900/10 flex items-center gap-4 group"
                     >
-                        <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">💬</div>
+                        <div className="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">💬</div>
                         <div>
-                            <h4 className="font-bold text-gray-900">Free Chat</h4>
-                            <p className="text-sm text-gray-500">Just talk about anything.</p>
+                            <h4 className="font-bold text-gray-900 dark:text-white">Free Chat</h4>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Just talk about anything.</p>
                         </div>
                     </button>
 
@@ -156,12 +156,12 @@ const ChatTutor: React.FC<ChatTutorProps> = ({ level }) => {
                         <button
                         key={scenario.id}
                         onClick={() => startChat(scenario)}
-                        className="p-4 rounded-xl border border-gray-200 bg-white text-left transition-all hover:border-blue-500 hover:shadow-md flex items-center gap-4 group"
+                        className="p-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#252525] text-left transition-all hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-md flex items-center gap-4 group"
                         >
-                            <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">{scenario.emoji}</div>
+                            <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">{scenario.emoji}</div>
                             <div>
-                                <h4 className="font-bold text-gray-900">{scenario.title}</h4>
-                                <p className="text-sm text-gray-500">{scenario.description}</p>
+                                <h4 className="font-bold text-gray-900 dark:text-white">{scenario.title}</h4>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">{scenario.description}</p>
                             </div>
                         </button>
                     ))}
@@ -172,7 +172,7 @@ const ChatTutor: React.FC<ChatTutorProps> = ({ level }) => {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-200px)] bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+    <div className="flex flex-col h-[calc(100vh-200px)] bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
       {/* Header */}
       <div className="bg-german-black text-white p-4 flex justify-between items-center z-10 shadow-md">
         <div className="flex items-center gap-3">
@@ -199,21 +199,21 @@ const ChatTutor: React.FC<ChatTutorProps> = ({ level }) => {
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-6 no-scrollbar bg-gray-50">
+      <div className="flex-1 overflow-y-auto p-4 space-y-6 no-scrollbar bg-gray-50 dark:bg-[#121212]">
         {messages.map((msg) => (
             <div key={msg.id} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} animate-in slide-in-from-bottom-2 fade-in duration-300`}>
             <div 
                 className={`max-w-[85%] p-4 rounded-2xl shadow-sm text-sm md:text-base relative group
                 ${msg.role === 'user' 
                     ? 'bg-german-gold text-black rounded-tr-none' 
-                    : 'bg-white text-gray-800 border border-gray-100 rounded-tl-none'}`}
+                    : 'bg-white dark:bg-[#2d2d2d] text-gray-800 dark:text-gray-200 border border-gray-100 dark:border-gray-700 rounded-tl-none'}`}
             >
                 {msg.text}
                 
                 {msg.role === 'model' && (
                 <button 
                     onClick={() => speakText(msg.text)}
-                    className="absolute -right-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity p-2 text-gray-400 hover:text-german-black"
+                    className="absolute -right-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity p-2 text-gray-400 hover:text-german-black dark:hover:text-white"
                     title="Listen"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -224,7 +224,7 @@ const ChatTutor: React.FC<ChatTutorProps> = ({ level }) => {
             </div>
             
             {msg.correction && (
-                <div className="mt-2 text-xs bg-red-50 text-red-600 p-2 rounded-lg border border-red-100 max-w-[85%] animate-in fade-in slide-in-from-top-2 flex gap-2 items-start">
+                <div className="mt-2 text-xs bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-2 rounded-lg border border-red-100 dark:border-red-900/30 max-w-[85%] animate-in fade-in slide-in-from-top-2 flex gap-2 items-start">
                     <span className="font-bold">⚠️</span>
                     <span>{msg.correction}</span>
                 </div>
@@ -233,7 +233,7 @@ const ChatTutor: React.FC<ChatTutorProps> = ({ level }) => {
         ))}
         {loading && (
             <div className="flex items-start">
-            <div className="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm border border-gray-100">
+            <div className="bg-white dark:bg-[#2d2d2d] p-3 rounded-2xl rounded-tl-none shadow-sm border border-gray-100 dark:border-gray-700">
                 <div className="flex space-x-1">
                 <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                 <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-75"></div>
@@ -245,7 +245,7 @@ const ChatTutor: React.FC<ChatTutorProps> = ({ level }) => {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="p-4 bg-white border-t border-gray-100">
+      <div className="p-4 bg-white dark:bg-[#1e1e1e] border-t border-gray-100 dark:border-gray-800">
         <div className="flex gap-2">
             <input
             type="text"
@@ -253,7 +253,7 @@ const ChatTutor: React.FC<ChatTutorProps> = ({ level }) => {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
             placeholder={selectedScenario ? "Antworte..." : "Schreib etwas..."}
-            className="flex-1 p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-german-gold/50 bg-gray-50 text-gray-900 placeholder:text-gray-400"
+            className="flex-1 p-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-german-gold/50 bg-gray-50 dark:bg-[#2d2d2d] text-gray-900 dark:text-white placeholder:text-gray-400"
             disabled={loading}
             autoFocus
             />
