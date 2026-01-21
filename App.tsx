@@ -11,6 +11,9 @@ import GrammarGuide from './components/GrammarGuide';
 
 const SESSION_SIZE = 15; // Learning Chunk Size
 
+// Extract unique categories from data for the topic selector
+const AVAILABLE_CATEGORIES = Array.from(new Set(LOCAL_VOCAB.map(w => w.category))).filter(c => c !== 'Grammar' && c !== 'Basics');
+
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(AppView.Vocab);
   const [level, setLevel] = useState<DifficultyLevel>(DifficultyLevel.Beginner);
@@ -18,6 +21,7 @@ const App: React.FC = () => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [loadingWords, setLoadingWords] = useState(false);
   const [learnMode, setLearnMode] = useState<'menu' | 'flashcards' | 'grammar' | 'favorites'>('menu');
+  const [currentTopic, setCurrentTopic] = useState<string | null>(null);
   
   // Favorites
   const [favorites, setFavorites] = useState<VocabWord[]>([]);
@@ -26,19 +30,26 @@ const App: React.FC = () => {
   const [correctStreak, setCorrectStreak] = useState(0);
   const [wrongStreak, setWrongStreak] = useState(0);
 
-  // Helper: Get a fresh batch of words based on level
-  const getFreshBatch = (lvl: DifficultyLevel): VocabWord[] => {
-    // Filter purely by level
-    const filtered = LOCAL_VOCAB.filter(w => {
-        if (lvl === DifficultyLevel.Beginner) return w.level === DifficultyLevel.Beginner; // A1 & A2
+  // Helper: Get a fresh batch of words based on level AND optional category
+  const getFreshBatch = (lvl: DifficultyLevel, category?: string): VocabWord[] => {
+    // Filter by level first
+    let pool = LOCAL_VOCAB.filter(w => {
+        // Strict level filtering for Beginner to ensure A1/A2 compliance
+        if (lvl === DifficultyLevel.Beginner) return w.level === DifficultyLevel.Beginner; 
         if (lvl === DifficultyLevel.Intermediate) return w.level === DifficultyLevel.Intermediate;
         return w.level === DifficultyLevel.Advanced;
     });
 
+    // Apply Category Filter if exists
+    if (category) {
+        pool = pool.filter(w => w.category === category);
+    }
+
     // Shuffle
-    const shuffled = [...filtered].sort(() => 0.5 - Math.random());
+    const shuffled = [...pool].sort(() => 0.5 - Math.random());
     
     // Take chunk
+    // If specific topic selected, we might want slightly more, but 15 is good for retention.
     return shuffled.slice(0, SESSION_SIZE);
   };
 
@@ -62,13 +73,12 @@ const App: React.FC = () => {
 
         if (savedWords) {
             const parsed = JSON.parse(savedWords);
-            // Validation check to prevent crash if data structure changed
             if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].german) {
                 loadedWords = parsed;
             }
         }
 
-        // If no valid save found, or if the save was "finished", start a fresh batch
+        // If no valid save found, start fresh
         if (loadedWords.length === 0 || (savedIndex && parseInt(savedIndex) >= loadedWords.length)) {
             loadedWords = getFreshBatch(savedLevel as DifficultyLevel || DifficultyLevel.Beginner);
             setCurrentWordIndex(0);
@@ -113,17 +123,21 @@ const App: React.FC = () => {
      });
   };
 
-  const startNewSession = () => {
+  const startNewSession = (category?: string) => {
       setLoadingWords(true);
+      if (category) setCurrentTopic(category);
+      else setCurrentTopic(null);
+
       // Small delay to simulate loading/reset UI
       setTimeout(() => {
-          const newBatch = getFreshBatch(level);
+          const newBatch = getFreshBatch(level, category);
           setWords(newBatch);
           setCurrentWordIndex(0);
           setCorrectStreak(0);
           setWrongStreak(0);
+          setLearnMode('flashcards');
           setLoadingWords(false);
-      }, 500);
+      }, 400);
   };
 
   const handleCardResult = (difficulty: 'hard' | 'easy') => {
@@ -147,105 +161,93 @@ const App: React.FC = () => {
     if (currentView === AppView.Vocab) {
       if (learnMode === 'menu') {
         return (
-          <div className="flex flex-col items-center justify-center h-full max-w-2xl mx-auto px-6 pb-20 pt-4">
+          <div className="flex flex-col items-center justify-center min-h-full max-w-2xl mx-auto px-6 pb-20 pt-8">
              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 text-center">Learning Hub</h1>
-             <p className="text-gray-500 dark:text-gray-400 mb-10 text-center">Master German efficiently.</p>
+             <p className="text-gray-500 dark:text-gray-400 mb-8 text-center">Your A1/A2 Path</p>
              
              <div className="grid gap-4 w-full max-w-md">
+                {/* 1. MAIN ACTIONS */}
                 <button 
-                  onClick={() => setLearnMode('flashcards')}
-                  className="bg-white dark:bg-[#1e1e1e] p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex items-center gap-4 hover:shadow-md hover:border-german-gold transition-all text-left group"
+                  onClick={() => startNewSession()}
+                  className="bg-gradient-to-r from-gray-900 to-gray-800 dark:from-gray-800 dark:to-gray-700 p-6 rounded-2xl shadow-lg border border-gray-700 flex items-center gap-4 hover:scale-[1.02] transition-transform text-left group"
                 >
-                   <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                      </svg>
+                   <div className="w-12 h-12 rounded-full bg-german-gold text-black flex items-center justify-center font-bold text-xl">
+                      🚀
                    </div>
                    <div className="flex-1">
-                      <h3 className="font-bold text-gray-900 dark:text-white text-lg">Daily Session</h3>
-                      <p className="text-sm text-gray-400">15 words • A1/A2 Focus</p>
+                      <h3 className="font-bold text-white text-lg">Daily Session</h3>
+                      <p className="text-sm text-gray-300">Smart Mix (15 words)</p>
                    </div>
-                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-300 dark:text-gray-600 group-hover:text-german-gold" viewBox="0 0 20 20" fill="currentColor">
-                     <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                    </svg>
                 </button>
 
-                 <button 
-                  onClick={() => {
-                      if(favorites.length > 0) {
-                          setCurrentWordIndex(0);
-                          setLearnMode('favorites');
-                      }
-                  }}
-                  className={`bg-white dark:bg-[#1e1e1e] p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex items-center gap-4 transition-all text-left group ${favorites.length === 0 ? 'opacity-60 grayscale cursor-not-allowed' : 'hover:shadow-md hover:border-german-gold'}`}
-                >
-                   <div className="w-12 h-12 rounded-full bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 fill-current" viewBox="0 0 20 20">
-                         <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                      </svg>
-                   </div>
-                   <div className="flex-1">
-                      <h3 className="font-bold text-gray-900 dark:text-white text-lg">Favorites</h3>
-                      <p className="text-sm text-gray-400">{favorites.length} saved words</p>
-                   </div>
-                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-300 dark:text-gray-600 group-hover:text-german-gold" viewBox="0 0 20 20" fill="currentColor">
-                     <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                   </svg>
-                </button>
+                <div className="grid grid-cols-2 gap-4">
+                    <button 
+                      onClick={() => {
+                          if(favorites.length > 0) {
+                              setCurrentWordIndex(0);
+                              setLearnMode('favorites');
+                          }
+                      }}
+                      className={`bg-white dark:bg-[#1e1e1e] p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col items-center justify-center gap-2 text-center transition-all ${favorites.length === 0 ? 'opacity-60' : 'hover:border-red-400'}`}
+                    >
+                       <div className="w-10 h-10 rounded-full bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center">
+                          ❤️
+                       </div>
+                       <div>
+                          <h3 className="font-bold text-gray-900 dark:text-white text-sm">Favorites</h3>
+                          <p className="text-xs text-gray-400">{favorites.length} words</p>
+                       </div>
+                    </button>
 
-                <button 
-                  onClick={() => setLearnMode('grammar')}
-                  className="bg-white dark:bg-[#1e1e1e] p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex items-center gap-4 hover:shadow-md hover:border-german-gold transition-all text-left group"
-                >
-                   <div className="w-12 h-12 rounded-full bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                      </svg>
-                   </div>
-                   <div className="flex-1">
-                      <h3 className="font-bold text-gray-900 dark:text-white text-lg">Grammar Rules</h3>
-                      <p className="text-sm text-gray-400">Cases, Articles & Structure</p>
-                   </div>
-                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-300 dark:text-gray-600 group-hover:text-german-gold" viewBox="0 0 20 20" fill="currentColor">
-                     <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                   </svg>
-                </button>
+                    <button 
+                      onClick={() => startNewSession('Time')}
+                      className="bg-white dark:bg-[#1e1e1e] p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col items-center justify-center gap-2 text-center transition-all hover:border-blue-400 group"
+                    >
+                       <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                          📅
+                       </div>
+                       <div>
+                          <h3 className="font-bold text-gray-900 dark:text-white text-sm">Days & Months</h3>
+                          <p className="text-xs text-gray-400">Time & Dates</p>
+                       </div>
+                    </button>
+                </div>
 
-                <button 
-                  onClick={() => setCurrentView(AppView.Drills)}
-                  className="bg-white dark:bg-[#1e1e1e] p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex items-center gap-4 hover:shadow-md hover:border-german-gold transition-all text-left group"
-                >
-                   <div className="w-12 h-12 rounded-full bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
-                   </div>
-                   <div className="flex-1">
-                      <h3 className="font-bold text-gray-900 dark:text-white text-lg">Verb Drills</h3>
-                      <p className="text-sm text-gray-400">Practice Conjugations</p>
-                   </div>
-                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-300 dark:text-gray-600 group-hover:text-german-gold" viewBox="0 0 20 20" fill="currentColor">
-                     <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                   </svg>
-                </button>
+                {/* 2. GRAMMAR & DRILLS ROW */}
+                <div className="flex gap-4 overflow-x-auto no-scrollbar py-2">
+                    <button 
+                      onClick={() => setLearnMode('grammar')}
+                      className="flex-shrink-0 bg-purple-50 dark:bg-purple-900/10 border border-purple-100 dark:border-purple-800 px-4 py-3 rounded-xl flex items-center gap-2 text-purple-700 dark:text-purple-300 text-sm font-bold"
+                    >
+                       📚 Grammar Guide
+                    </button>
+                    <button 
+                      onClick={() => setCurrentView(AppView.Drills)}
+                      className="flex-shrink-0 bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-green-800 px-4 py-3 rounded-xl flex items-center gap-2 text-green-700 dark:text-green-300 text-sm font-bold"
+                    >
+                       🔄 Verb Drills
+                    </button>
+                </div>
 
-                <button 
-                  onClick={() => setCurrentView(AppView.Numbers)}
-                  className="bg-white dark:bg-[#1e1e1e] p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex items-center gap-4 hover:shadow-md hover:border-german-gold transition-all text-left group"
-                >
-                   <div className="w-12 h-12 rounded-full bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
-                      </svg>
-                   </div>
-                   <div className="flex-1">
-                      <h3 className="font-bold text-gray-900 dark:text-white text-lg">Numbers</h3>
-                      <p className="text-sm text-gray-400">Practice counting 0-1000+</p>
-                   </div>
-                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-300 dark:text-gray-600 group-hover:text-german-gold" viewBox="0 0 20 20" fill="currentColor">
-                     <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                   </svg>
-                </button>
+                {/* 3. STUDY BY TOPIC */}
+                <div className="mt-4">
+                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 ml-1">Study by Topic</h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        {AVAILABLE_CATEGORIES.map(cat => (
+                            <button
+                                key={cat}
+                                onClick={() => startNewSession(cat)}
+                                className="bg-white dark:bg-[#252525] p-3 rounded-xl border border-gray-100 dark:border-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#2d2d2d] hover:border-gray-300 dark:hover:border-gray-600 transition-colors text-left truncate"
+                            >
+                                {cat === 'Time' ? 'Time & Dates' : cat}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
              </div>
           </div>
         );
@@ -293,7 +295,7 @@ const App: React.FC = () => {
 
           <div className="mb-8 text-center mt-12 w-full">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                {learnMode === 'favorites' ? 'My Favorites' : 'Daily Session'}
+                {learnMode === 'favorites' ? 'My Favorites' : currentTopic === 'Time' ? 'Time & Dates' : currentTopic ? currentTopic : 'Daily Session'}
             </h1>
             <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm">
                  {learnMode === 'favorites' 
@@ -347,7 +349,7 @@ const App: React.FC = () => {
                           if(learnMode === 'favorites') {
                               setCurrentWordIndex(0); // Restart favorites
                           } else {
-                              startNewSession();
+                              startNewSession(currentTopic || undefined);
                           }
                       }} 
                       className="px-4 py-3 bg-german-gold text-black font-bold rounded-xl hover:bg-yellow-400 transition-colors shadow-lg shadow-yellow-400/20"
@@ -452,7 +454,7 @@ const App: React.FC = () => {
            </div>
 
            <div className="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800">
-             <p className="text-xs text-gray-400 text-center">DeutschFlow v1.7 • Powered by Gemini</p>
+             <p className="text-xs text-gray-400 text-center">DeutschFlow v1.8 • Powered by Gemini</p>
            </div>
          </div>
        </div>
@@ -498,8 +500,6 @@ const App: React.FC = () => {
           <button 
             onClick={() => {
                 setCurrentView(AppView.Vocab);
-                // Reset to menu if clicking the tab while already active? 
-                // Usually good UX to reset stack.
                 if(currentView === AppView.Vocab) setLearnMode('menu');
             }}
             className={`flex flex-col items-center gap-1 transition-colors ${currentView === AppView.Vocab ? 'text-black dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}
