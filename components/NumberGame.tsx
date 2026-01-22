@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { DifficultyLevel } from '../types';
 import { speakText } from '../services/geminiService';
@@ -45,8 +46,6 @@ const convertNumberToGerman = (n: number): string => {
         if (thousand === 1) thousandStr = 'eintausend';
         
         if (remainder === 0) return thousandStr;
-        // format: "eintausend" + rest, but need to handle "eins" vs "ein" if complex? 
-        // Simple append works for most cases here.
         return thousandStr + convertNumberToGerman(remainder);
     }
 

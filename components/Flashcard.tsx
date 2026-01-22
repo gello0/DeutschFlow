@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { VocabWord } from '../types';
 import { speakText } from '../services/geminiService';
@@ -11,7 +12,6 @@ interface FlashcardProps {
 
 const Flashcard: React.FC<FlashcardProps> = ({ word, onResult, isFavorite, onToggleFavorite }) => {
   const [isFlipped, setIsFlipped] = useState(false);
-  const [loadingAudio, setLoadingAudio] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
   // Ensure card is reset if word changes externally
@@ -19,12 +19,9 @@ const Flashcard: React.FC<FlashcardProps> = ({ word, onResult, isFavorite, onTog
     setIsFlipped(false);
   }, [word]);
 
-  const handleAudio = async (e: React.MouseEvent, text: string) => {
+  const handleAudio = (e: React.MouseEvent, text: string) => {
     e.stopPropagation();
-    if (loadingAudio) return;
-    setLoadingAudio(true);
-    await speakText(text);
-    setLoadingAudio(false);
+    speakText(text);
   };
 
   const handleNext = (e: React.MouseEvent, difficulty: 'hard' | 'easy') => {
@@ -36,7 +33,6 @@ const Flashcard: React.FC<FlashcardProps> = ({ word, onResult, isFavorite, onTog
 
     // The CSS transition is 0.6s (600ms).
     // We wait 300ms (halfway, when card is at 90deg and invisible) to swap the data.
-    // This creates a seamless effect where the new card finishes the flip.
     setTimeout(() => {
       onResult(difficulty);
       

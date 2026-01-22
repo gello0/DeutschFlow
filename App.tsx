@@ -1,9 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import { AppView, DifficultyLevel, VocabWord } from './types';
 import { generateVocabulary } from './services/geminiService';
 import { LOCAL_VOCAB } from './data/fallbackData';
 import Flashcard from './components/Flashcard';
-import ChatTutor from './components/ChatTutor';
 import Journal from './components/Journal';
 import ConjugationDrill from './components/ConjugationDrill';
 import NumberGame from './components/NumberGame';
@@ -123,21 +123,21 @@ const App: React.FC = () => {
      });
   };
 
-  const startNewSession = (category?: string) => {
+  const startNewSession = async (category?: string) => {
       setLoadingWords(true);
       if (category) setCurrentTopic(category);
       else setCurrentTopic(null);
 
-      // Small delay to simulate loading/reset UI
-      setTimeout(() => {
-          const newBatch = getFreshBatch(level, category);
-          setWords(newBatch);
-          setCurrentWordIndex(0);
-          setCorrectStreak(0);
-          setWrongStreak(0);
-          setLearnMode('flashcards');
-          setLoadingWords(false);
-      }, 400);
+      // Using the service logic (now static)
+      // Small delay handled by service promise, but we can do a UI set here
+      const newBatch = await generateVocabulary(level, category);
+      
+      setWords(newBatch);
+      setCurrentWordIndex(0);
+      setCorrectStreak(0);
+      setWrongStreak(0);
+      setLearnMode('flashcards');
+      setLoadingWords(false);
   };
 
   const handleCardResult = (difficulty: 'hard' | 'easy') => {
@@ -369,14 +369,6 @@ const App: React.FC = () => {
       );
     }
 
-    if (currentView === AppView.Chat) {
-      return (
-        <div className="h-full max-w-2xl mx-auto px-4 pt-4 pb-24">
-           <ChatTutor level={level} />
-        </div>
-      );
-    }
-
     if (currentView === AppView.Journal) {
         return (
             <div className="h-full pt-4 pb-24">
@@ -412,9 +404,7 @@ const App: React.FC = () => {
                  key={lvl}
                  onClick={() => { 
                      setLevel(lvl); 
-                     const newBatch = getFreshBatch(lvl);
-                     setWords(newBatch); 
-                     setCurrentWordIndex(0);
+                     startNewSession();
                  }}
                  className={`w-full text-left px-4 py-3 rounded-lg border transition-all ${
                    level === lvl 
@@ -454,7 +444,7 @@ const App: React.FC = () => {
            </div>
 
            <div className="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800">
-             <p className="text-xs text-gray-400 text-center">DeutschFlow v1.9 • Powered by Gemini</p>
+             <p className="text-xs text-gray-400 text-center">DeutschFlow v2.0 • Offline Mode</p>
            </div>
          </div>
        </div>
@@ -528,16 +518,6 @@ const App: React.FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
             </svg>
             <span className="text-[10px] font-medium">Numbers</span>
-          </button>
-
-          <button 
-            onClick={() => setCurrentView(AppView.Chat)}
-            className={`flex flex-col items-center gap-1 transition-colors ${currentView === AppView.Chat ? 'text-black dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-            </svg>
-            <span className="text-[10px] font-medium">Chat</span>
           </button>
 
            <button 

@@ -12,13 +12,8 @@ export interface VocabWord {
   exampleGerman: string;
   exampleEnglish: string;
   type: string; // Noun, Verb, Adjective, etc.
-}
-
-export interface ChatMessage {
-  id: string;
-  role: 'user' | 'model';
-  text: string;
-  correction?: string; // Optional field if the tutor corrects the user
+  category?: string;
+  level?: DifficultyLevel;
 }
 
 export interface VerbDrill {
@@ -36,25 +31,31 @@ export interface VerbDrill {
   tip?: string; // Optional grammar tip (e.g., "Stem changing verb")
 }
 
+export enum AppView {
+  Vocab = 'vocab',
+  Journal = 'journal',
+  Drills = 'drills',
+  Numbers = 'numbers',
+  Settings = 'settings'
+}
+
+export interface ChatMessage {
+  id: string;
+  role: 'user' | 'model';
+  text: string;
+  correction?: string;
+}
+
 export interface Scenario {
   id: string;
   title: string;
   emoji: string;
   description: string;
-  systemPrompt: string;
   initialMessage: string;
+  systemPrompt: string;
 }
 
 export interface SentencePuzzle {
   german: string;
   english: string;
-}
-
-export enum AppView {
-  Vocab = 'vocab',
-  Chat = 'chat',
-  Journal = 'journal',
-  Drills = 'drills',
-  Numbers = 'numbers',
-  Settings = 'settings'
 }

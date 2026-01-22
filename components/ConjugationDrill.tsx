@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { DifficultyLevel, VerbDrill } from '../types';
 import { generateVerbDrill, speakText } from '../services/geminiService';
@@ -65,7 +66,7 @@ const ConjugationDrill: React.FC<ConjugationDrillProps> = ({ level }) => {
     return (
       <div className="flex flex-col items-center justify-center h-full">
         <div className="w-12 h-12 border-4 border-german-gold border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p className="text-gray-500 dark:text-gray-400">Generating drill...</p>
+        <p className="text-gray-500 dark:text-gray-400">Loading drill...</p>
       </div>
     );
   }

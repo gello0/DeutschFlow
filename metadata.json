@@ -1,7 +1,5 @@
 {
   "name": "DeutschFlow",
-  "description": "An interactive German learning companion featuring AI-powered vocabulary flashcards with pronunciation and a conversational tutor.",
-  "requestFramePermissions": [
-    "microphone"
-  ]
+  "description": "An interactive German learning companion featuring vocabulary flashcards and verb drills.",
+  "requestFramePermissions": []
 }
