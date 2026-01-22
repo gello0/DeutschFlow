@@ -56,6 +56,5 @@ export enum AppView {
   Journal = 'journal',
   Drills = 'drills',
   Numbers = 'numbers',
-  SentenceBuilder = 'sentence_builder',
   Settings = 'settings'
 }
