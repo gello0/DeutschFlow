@@ -1,7 +1,7 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
 import { VocabWord, DifficultyLevel, VerbDrill, ChatMessage, SentencePuzzle } from "../types";
-import { LOCAL_VOCAB, LOCAL_VERBS } from "../data/fallbackData";
+import { LOCAL_VOCAB, LOCAL_VERBS, LOCAL_SENTENCES } from "../data/fallbackData";
 
 // 1. Generate Vocabulary (Dynamic via Gemini with Local Fallback)
 export const generateVocabulary = async (
@@ -191,47 +191,53 @@ export const sendMessageToTutor = async (
 
 // 5. Sentence Puzzle Generator AI
 export const generateSentencePuzzle = async (level: DifficultyLevel): Promise<SentencePuzzle | null> => {
-    if (!process.env.API_KEY) {
-        // Fallback for demo without key
-        return { german: "Das ist ein Haus.", english: "This is a house." };
-    }
+    // Artificial delay
+    await new Promise(resolve => setTimeout(resolve, 300));
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-    
-    const prompt = `Generate a simple German sentence appropriate for level ${level}. 
-    It should be 4-8 words long.
-    Return JSON with:
-    1. "german": The sentence in German.
-    2. "english": The English translation.
-    `;
+    // Try Gemini first if key exists
+    if (process.env.API_KEY) {
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        const prompt = `Generate a simple German sentence appropriate for level ${level}. 
+        It should be 4-8 words long.
+        Return JSON with:
+        1. "german": The sentence in German.
+        2. "english": The English translation.
+        `;
 
-    try {
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: prompt,
-            config: {
-                responseMimeType: 'application/json',
-                responseSchema: {
-                    type: Type.OBJECT,
-                    properties: {
-                        german: { type: Type.STRING },
-                        english: { type: Type.STRING }
-                    },
-                    required: ['german', 'english']
+        try {
+            const response = await ai.models.generateContent({
+                model: 'gemini-2.5-flash',
+                contents: prompt,
+                config: {
+                    responseMimeType: 'application/json',
+                    responseSchema: {
+                        type: Type.OBJECT,
+                        properties: {
+                            german: { type: Type.STRING },
+                            english: { type: Type.STRING }
+                        },
+                        required: ['german', 'english']
+                    }
                 }
+            });
+
+            const jsonText = response.text || "{}";
+            const parsed = JSON.parse(jsonText);
+            
+            if (parsed.german && parsed.english) {
+                return { german: parsed.german, english: parsed.english };
             }
-        });
-
-        const jsonText = response.text || "{}";
-        const parsed = JSON.parse(jsonText);
-        
-        if (parsed.german && parsed.english) {
-            return { german: parsed.german, english: parsed.english };
+        } catch (error) {
+            console.error("Gemini API Error (Sentence):", error);
+            // Fallthrough to local
         }
-        return null;
-
-    } catch (error) {
-        console.error("Gemini API Error:", error);
-        return null;
     }
+
+    // Fallback to Local Sentences
+    if (LOCAL_SENTENCES.length > 0) {
+        const randomIndex = Math.floor(Math.random() * LOCAL_SENTENCES.length);
+        return LOCAL_SENTENCES[randomIndex];
+    }
+
+    return { german: "Das ist ein Haus.", english: "This is a house." };
 };
