@@ -22,7 +22,7 @@ export const generateVocabulary = async (
             - english: string (translation)
             - gender: 'der', 'die', 'das', or '' (empty for non-nouns)
             - type: 'Noun', 'Verb', 'Adjective', 'Phrase'
-            - exampleGerman: a simple example sentence using the word
+            - exampleGerman: A natural, varied example sentence using the word. DO NOT use "Das ist [word]". Use context like "I eat...", "Where is...", "The [word] is beautiful".
             - exampleEnglish: translation of the example sentence
             `;
 

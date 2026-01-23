@@ -1,3 +1,4 @@
+
 import { VocabWord, VerbDrill, DifficultyLevel } from "../types";
 
 // Extended interface for local DB
@@ -874,46 +875,121 @@ const getArticle = (gender: string) => {
 
 // Improved Auto-Generator for Examples
 const generateExample = (german: string, english: string, type: string, gender: string, category: string) => {
-  const art = getArticle(gender);
+  const art = getArticle(gender); // der, die, das
+  const Art = art ? art.charAt(0).toUpperCase() + art.slice(1) : ''; 
   
-  if (type === 'Greeting') return { de: `${german}!`, en: `${english}!` };
-  if (type === 'Phrase') return { de: `${german}.`, en: `${english}.` };
+  if (type === 'Greeting') return { de: `${german}! Wie geht es dir?`, en: `${english}! How are you?` };
+  if (type === 'Phrase') return { de: `${german}. Das ist gut.`, en: `${english}. That is good.` };
   
   if (type === 'Noun') {
      const noun = german; 
-     if (category === 'Food') return { de: `Ich esse ${art} ${noun}.`, en: `I eat the ${english}.` };
-     if (category === 'Clothing') return { de: `Ich trage ${art} ${noun}.`, en: `I wear the ${english}.` };
-     if (category === 'Body') return { de: `Das ist mein ${noun}.`, en: `That is my ${english}.` };
-     if (category === 'Family') return { de: `Das ist mein ${noun}.`, en: `That is my ${english}.` };
-     if (category === 'Animals') return { de: `${art ? art.charAt(0).toUpperCase() + art.slice(1) + ' ' : ''}${noun} ist hier.`, en: `The ${english} is here.` };
-     if (category === 'City' || category === 'Home') return { de: `Wo ist ${art} ${noun}?`, en: `Where is the ${english}?` };
-     if (category === 'Professions') return { de: `Ich bin ${noun}.`, en: `I am a ${english}.` };
-     // Default Noun
-     return { de: `Das ist ${art} ${noun}.`, en: `That is the ${english}.` };
+
+     // Food/Drinks
+     if (category === 'Food') {
+        const verbs = ['schmeckt', 'ist'];
+        const adj = ['lecker', 'frisch', 'gut'];
+        return { de: `${Art} ${noun} schmeckt lecker.`, en: `The ${english} tastes delicious.` };
+     }
+     
+     // Clothing
+     if (category === 'Clothing') {
+        // Accusative masculine 'einen'
+        const ein = gender === 'f' ? 'eine' : (gender === 'm' ? 'einen' : 'ein');
+        return { de: `Ich kaufe ${ein} ${noun}.`, en: `I am buying a ${english}.` };
+     }
+
+     // Body Parts
+     if (category === 'Body') {
+        return { de: `Mein ${noun} tut weh.`, en: `My ${english} hurts.` };
+     }
+
+     // Family
+     if (category === 'Family') {
+        return { de: `Mein ${noun} ist sehr freundlich.`, en: `My ${english} is very friendly.` };
+     }
+
+     // Animals
+     if (category === 'Animals') {
+         return { de: `${Art} ${noun} hat Hunger.`, en: `The ${english} is hungry.` };
+     }
+
+     // City & Places
+     if (category === 'City' || category === 'Home') {
+        if (['Schule', 'Arbeit', 'Universität', 'Bank', 'Post'].includes(noun)) {
+             return { de: `Ich muss zur ${noun} gehen.`, en: `I must go to the ${english}.` };
+        }
+        return { de: `Wo finde ich ${gender === 'm' ? 'den' : (gender === 'f' ? 'die' : 'das')} ${noun}?`, en: `Where do I find the ${english}?` };
+     }
+     
+     // Professions
+     if (category === 'Professions' || category === 'Work') {
+        return { de: `Er arbeitet als ${noun}.`, en: `He works as a ${english}.` };
+     }
+     
+     // Transport
+     if (category === 'Transport') {
+        if (noun === 'Auto' || noun === 'Taxi') return { de: `Ich fahre mit dem ${noun}.`, en: `I go by ${english}.` };
+        return { de: `Der ${noun} hat Verspätung.`, en: `The ${english} is delayed.` };
+     }
+
+     // Nature & Weather
+     if (category === 'Nature') {
+        if (['Sonne', 'Welt', 'Erde'].includes(noun)) return { de: `Die ${noun} ist groß.`, en: `The ${english} is big.` };
+        if (['Regen', 'Schnee', 'Wind'].includes(noun)) return { de: `Der ${noun} ist stark.`, en: `The ${english} is strong.` };
+        return { de: `${Art} ${noun} ist wunderschön.`, en: `The ${english} is beautiful.` };
+     }
+     
+     // Objects/Materials/Tools
+     if (category === 'Objects' || category === 'Kitchen') {
+         // I search for... (Akkusativ)
+         const artAkk = gender === 'm' ? 'den' : (gender === 'f' ? 'die' : 'das');
+         return { de: `Ich suche ${artAkk} ${noun}.`, en: `I am looking for the ${english}.` };
+     }
+     
+     // Time
+     if (category === 'Time') {
+         if (noun.endsWith('tag') || noun === 'Wochenende') return { de: `Am ${noun} habe ich Zeit.`, en: `On ${english} I have time.` };
+         return { de: `Die ${noun} vergeht schnell.`, en: `The ${english} passes quickly.` };
+     }
+
+     // Society / Abstract
+     if (category === 'Society' || category === 'Abstract') {
+         return { de: `${noun} ist wichtig.`, en: `${english} is important.` };
+     }
+
+     // Default Noun catch-all (Varied based on gender to avoid repetition)
+     if (art === 'der') return { de: `Wo ist der ${noun}?`, en: `Where is the ${english}?` };
+     if (art === 'die') return { de: `Ich sehe die ${noun}.`, en: `I see the ${english}.` };
+     if (art === 'das') return { de: `Das ${noun} gehört mir.`, en: `The ${english} belongs to me.` };
+     
+     return { de: `Hier ist ein ${noun}.`, en: `Here is a ${english}.` };
   }
 
+  // Verb Handling - create context
   if (type === 'Verb') {
-     return { de: `Wir müssen ${german}.`, en: `We must ${english}.` };
+     return { de: `Kannst du ${german}?`, en: `Can you ${english}?` };
   }
 
+  // Adjective Handling
   if (type === 'Adjective') {
-     return { de: `Es ist ${german}.`, en: `It is ${english}.` };
+     if (category === 'Colors') return { de: `Die Blume ist ${german}.`, en: `The flower is ${english}.` };
+     return { de: `Ich finde das ${german}.`, en: `I find that ${english}.` };
   }
   
   if (type === 'Adverb') {
-      return { de: `Das ist ${german} so.`, en: `That is ${english} so.` };
+      return { de: `Er läuft ${german}.`, en: `He runs ${english}.` };
   }
   
   if (type === 'Pronoun') {
-      return { de: `${german} bist da?`, en: `${english} are there?` };
+      return { de: `${german} ist das?`, en: `${english} is that?` };
   }
 
   if (type === 'Preposition') {
-      return { de: `${german} dem Haus.`, en: `${english} the house.` };
+      return { de: `Das Buch liegt ${german} dem Tisch.`, en: `The book is ${english} the table.` };
   }
 
   if (type === 'Conjunction') {
-      return { de: `A ${german} B.`, en: `A ${english} B.` };
+      return { de: `Ich mag Kaffee ${german} Tee.`, en: `I like coffee ${english} tea.` };
   }
 
   // Fallback
@@ -937,7 +1013,7 @@ export const LOCAL_VOCAB: LocalVocabEntry[] = RAW_CSV_DATA
     const levelKey = parts[5]?.trim() || '';
 
     const gender = getArticle(genderKey);
-    const examples = generateExample(german, english, type, gender, category);
+    const examples = generateExample(german, english, type, genderKey, category);
     
     return {
       german,
