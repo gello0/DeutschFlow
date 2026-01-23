@@ -71,8 +71,12 @@ const BookMode: React.FC = () => {
     } else if (currentEx.type === 'fill-gap') {
       isCorrect = userAnswer.trim().toLowerCase() === currentEx.correctAnswer.toLowerCase();
     } else if (currentEx.type === 'arrange') {
-      const constructed = arrangedWords.map(w => w.text).join(' ');
-      // Remove punctuation for comparison flexibility if needed, but usually strict
+      // Join words and fix punctuation spacing (e.g. "Hallo ." -> "Hallo.")
+      const constructed = arrangedWords
+        .map(w => w.text)
+        .join(' ')
+        .replace(/\s+([.,!?;:])/g, '$1');
+      
       isCorrect = constructed === currentEx.correctAnswer;
     }
 

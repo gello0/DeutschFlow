@@ -583,6 +583,172 @@ dürfen|may/allowed|-|Verb|Verbs|1
 können|can|-|Verb|Verbs|1
 wollen|want|-|Verb|Verbs|1
 mögen|like|-|Verb|Verbs|1
+
+# TRANSPORT (VERKEHR)
+Auto|car|n|Noun|Transportation|1
+Bus|bus|m|Noun|Transportation|1
+Zug|train|m|Noun|Transportation|1
+Bahn|train/railway|f|Noun|Transportation|1
+U-Bahn|subway|f|Noun|Transportation|1
+S-Bahn|suburban train|f|Noun|Transportation|1
+Straßenbahn|tram|f|Noun|Transportation|1
+Flugzeug|airplane|n|Noun|Transportation|1
+Fahrrad|bicycle|n|Noun|Transportation|1
+Taxi|taxi|n|Noun|Transportation|1
+Schiff|ship|n|Noun|Transportation|1
+Motorrad|motorcycle|n|Noun|Transportation|1
+Ticket|ticket|n|Noun|Transportation|1
+Fahrkarte|ticket|f|Noun|Transportation|1
+Bahnhof|train station|m|Noun|Transportation|1
+Haltestelle|stop|f|Noun|Transportation|1
+Flughafen|airport|m|Noun|Transportation|1
+Gleis|track/platform|n|Noun|Transportation|1
+Verspätung|delay|f|Noun|Transportation|1
+Abfahrt|departure|f|Noun|Transportation|1
+Ankunft|arrival|f|Noun|Transportation|1
+Koffer|suitcase|m|Noun|Transportation|1
+Gepäck|luggage|n|Noun|Transportation|1
+fahren|to drive/go|-|Verb|Transportation|1
+fliegen|to fly|-|Verb|Transportation|1
+einsteigen|to get on|-|Verb|Transportation|1
+aussteigen|to get off|-|Verb|Transportation|1
+umsteigen|to transfer|-|Verb|Transportation|1
+
+# TECHNOLOGY (TECHNIK)
+Computer|computer|m|Noun|Technology|1
+Laptop|laptop|m|Noun|Technology|1
+Handy|mobile phone|n|Noun|Technology|1
+Tablet|tablet|n|Noun|Technology|1
+Fernseher|TV|m|Noun|Technology|1
+Radio|radio|n|Noun|Technology|1
+Kamera|camera|f|Noun|Technology|1
+Internet|internet|n|Noun|Technology|1
+WLAN|WiFi|n|Noun|Technology|1
+E-Mail|email|f|Noun|Technology|1
+Nachricht|message|f|Noun|Technology|1
+Bildschirm|screen|m|Noun|Technology|1
+Tastatur|keyboard|f|Noun|Technology|1
+Maus|mouse|f|Noun|Technology|1
+Drucker|printer|m|Noun|Technology|1
+Datei|file|f|Noun|Technology|1
+Programm|program|n|Noun|Technology|1
+App|app|f|Noun|Technology|1
+Passwort|password|n|Noun|Technology|1
+Link|link|m|Noun|Technology|1
+klicken|to click|-|Verb|Technology|1
+speichern|to save|-|Verb|Technology|1
+senden|to send|-|Verb|Technology|1
+löschen|to delete|-|Verb|Technology|1
+drucken|to print|-|Verb|Technology|1
+anrufen|to call|-|Verb|Technology|1
+telefonieren|to phone|-|Verb|Technology|1
+chatten|to chat|-|Verb|Technology|1
+online|online|-|Adjective|Technology|1
+offline|offline|-|Adjective|Technology|1
+
+# TIME & CALENDAR (ZEIT)
+Zeit|time|f|Noun|Time|1
+Uhr|clock/watch|f|Noun|Time|1
+Stunde|hour|f|Noun|Time|1
+Minute|minute|f|Noun|Time|1
+Sekunde|second|f|Noun|Time|1
+Tag|day|m|Noun|Time|1
+Woche|week|f|Noun|Time|1
+Monat|month|m|Noun|Time|1
+Jahr|year|n|Noun|Time|1
+Morgen|morning|m|Noun|Time|1
+Vormittag|morning (late)|m|Noun|Time|1
+Mittag|noon|m|Noun|Time|1
+Nachmittag|afternoon|m|Noun|Time|1
+Abend|evening|m|Noun|Time|1
+Nacht|night|f|Noun|Time|1
+Montag|Monday|m|Noun|Time|1
+Dienstag|Tuesday|m|Noun|Time|1
+Mittwoch|Wednesday|m|Noun|Time|1
+Donnerstag|Thursday|m|Noun|Time|1
+Freitag|Friday|m|Noun|Time|1
+Samstag|Saturday|m|Noun|Time|1
+Sonntag|Sunday|m|Noun|Time|1
+Januar|January|m|Noun|Time|1
+Februar|February|m|Noun|Time|1
+März|March|m|Noun|Time|1
+April|April|m|Noun|Time|1
+Mai|May|m|Noun|Time|1
+Juni|June|m|Noun|Time|1
+Juli|July|m|Noun|Time|1
+August|August|m|Noun|Time|1
+September|September|m|Noun|Time|1
+Oktober|October|m|Noun|Time|1
+November|November|m|Noun|Time|1
+Dezember|December|m|Noun|Time|1
+Frühling|Spring|m|Noun|Time|1
+Sommer|Summer|m|Noun|Time|1
+Herbst|Autumn|m|Noun|Time|1
+Winter|Winter|m|Noun|Time|1
+heute|today|-|Adverb|Time|1
+morgen|tomorrow|-|Adverb|Time|1
+gestern|yesterday|-|Adverb|Time|1
+jetzt|now|-|Adverb|Time|1
+später|later|-|Adverb|Time|1
+bald|soon|-|Adverb|Time|1
+immer|always|-|Adverb|Time|1
+nie|never|-|Adverb|Time|1
+oft|often|-|Adverb|Time|1
+manchmal|sometimes|-|Adverb|Time|1
+
+# FEELINGS (GEFÜHLE)
+Liebe|love|f|Noun|Feelings|1
+Angst|fear|f|Noun|Feelings|1
+Glück|luck/happiness|n|Noun|Feelings|1
+Spaß|fun|m|Noun|Feelings|1
+Wut|anger|f|Noun|Feelings|1
+Trauer|grief|f|Noun|Feelings|1
+Stress|stress|m|Noun|Feelings|1
+Ruhe|calm/peace|f|Noun|Feelings|1
+Hoffnung|hope|f|Noun|Feelings|1
+Traum|dream|m|Noun|Feelings|1
+lachen|to laugh|-|Verb|Feelings|1
+weinen|to cry|-|Verb|Feelings|1
+lächeln|to smile|-|Verb|Feelings|1
+freuen|to be happy|-|Verb|Feelings|1
+ärgern|to be annoyed|-|Verb|Feelings|1
+fühlen|to feel|-|Verb|Feelings|1
+lieben|to love|-|Verb|Feelings|1
+hassen|to hate|-|Verb|Feelings|1
+glücklich|happy|-|Adjective|Feelings|1
+traurig|sad|-|Adjective|Feelings|1
+wütend|angry|-|Adjective|Feelings|1
+müde|tired|-|Adjective|Feelings|1
+nervös|nervous|-|Adjective|Feelings|1
+zufrieden|satisfied|-|Adjective|Feelings|1
+lustig|funny|-|Adjective|Feelings|1
+langweilig|boring|-|Adjective|Feelings|1
+interessant|interesting|-|Adjective|Feelings|1
+nett|nice|-|Adjective|Feelings|1
+böse|evil/angry|-|Adjective|Feelings|1
+sympathisch|likable|-|Adjective|Feelings|1
+
+# COUNTRIES (LÄNDER)
+Deutschland|Germany|n|Noun|Countries|1
+Österreich|Austria|n|Noun|Countries|1
+Schweiz|Switzerland|f|Noun|Countries|1
+Frankreich|France|n|Noun|Countries|1
+Spanien|Spain|n|Noun|Countries|1
+Italien|Italy|n|Noun|Countries|1
+Großbritannien|Great Britain|n|Noun|Countries|1
+USA|USA|p|Noun|Countries|1
+Russland|Russia|n|Noun|Countries|1
+Türkei|Turkey|f|Noun|Countries|1
+Polen|Poland|n|Noun|Countries|1
+China|China|n|Noun|Countries|1
+Japan|Japan|n|Noun|Countries|1
+Indien|India|n|Noun|Countries|1
+Brasilien|Brazil|n|Noun|Countries|1
+Ägypten|Egypt|n|Noun|Countries|1
+Griechenland|Greece|n|Noun|Countries|1
+Niederlande|Netherlands|p|Noun|Countries|1
+Schweden|Sweden|n|Noun|Countries|1
+Dänemark|Denmark|n|Noun|Countries|1
 `;
 
 export const LOCAL_VOCAB: LocalVocabEntry[] = RAW_CSV_DATA
