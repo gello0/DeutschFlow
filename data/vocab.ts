@@ -13,6 +13,7 @@ export const getArticle = (key: string): string => {
     case 'm': return 'der';
     case 'f': return 'die';
     case 'n': return 'das';
+    case 'p': return 'die'; // Plural
     default: return '';
   }
 };
@@ -32,7 +33,7 @@ export const generateExample = (german: string, english: string, type: string, g
     const article = getArticle(genderKey);
     if (article) {
          const CapArticle = article.charAt(0).toUpperCase() + article.slice(1);
-         return { de: `${CapArticle} ${german} ist schön.`, en: `The ${english} is beautiful.` };
+         return { de: `${CapArticle} ${german} ist da.`, en: `The ${english} is there.` };
     }
     return { de: `${german} ist wichtig.`, en: `${english} is important.` };
 };
@@ -89,6 +90,20 @@ export const LOCAL_VERBS: VerbDrill[] = [
     tense: "Präsens",
     conjugations: { ich: "spreche", du: "sprichst", er_sie_es: "spricht", wir: "sprechen", ihr: "sprecht", sie_Sie: "sprechen" },
     tip: "Vowel change e -> i"
+  },
+  {
+    infinitive: "lesen",
+    translation: "to read",
+    tense: "Präsens",
+    conjugations: { ich: "lese", du: "liest", er_sie_es: "liest", wir: "lesen", ihr: "lest", sie_Sie: "lesen" },
+    tip: "Vowel change e -> ie"
+  },
+  {
+    infinitive: "fahren",
+    translation: "to drive/go",
+    tense: "Präsens",
+    conjugations: { ich: "fahre", du: "fährst", er_sie_es: "fährt", wir: "fahren", ihr: "fahrt", sie_Sie: "fahren" },
+    tip: "Vowel change a -> ä"
   }
 ];
 
@@ -282,55 +297,242 @@ billig|cheap|-|Adjective|Adjectives|1
 gemütlich|cozy|-|Adjective|Adjectives|1
 praktisch|practical|-|Adjective|Adjectives|1
 
-# UNIT 5: TERMINE
-Zeit|time|f|Noun|Time|1
-Uhr|clock/watch|f|Noun|Time|1
-Uhrzeit|time of day|f|Noun|Time|1
-Stunde|hour|f|Noun|Time|1
-Minute|minute|f|Noun|Time|1
-Sekunde|second|f|Noun|Time|1
-Tag|day|m|Noun|Time|1
-Woche|week|f|Noun|Time|1
-Monat|month|m|Noun|Time|1
-Jahr|year|n|Noun|Time|1
-Morgen|morning|m|Noun|Time|1
-Vormittag|late morning|m|Noun|Time|1
-Mittag|noon|m|Noun|Time|1
-Nachmittag|afternoon|m|Noun|Time|1
-Abend|evening|m|Noun|Time|1
-Nacht|night|f|Noun|Time|1
-Montag|Monday|m|Noun|Time|1
-Dienstag|Tuesday|m|Noun|Time|1
-Mittwoch|Wednesday|m|Noun|Time|1
-Donnerstag|Thursday|m|Noun|Time|1
-Freitag|Friday|m|Noun|Time|1
-Samstag|Saturday|m|Noun|Time|1
-Sonntag|Sunday|m|Noun|Time|1
-Wochenende|weekend|n|Noun|Time|1
-Termin|appointment|m|Noun|Time|1
-Kalender|calendar|m|Noun|Time|1
-Verabredung|date/meeting|f|Noun|Time|1
-Treffen|meeting|n|Noun|Time|1
-anfangen|to begin|-|Verb|Verbs|1
-aufhören|to stop|-|Verb|Verbs|1
-dauern|to last|-|Verb|Verbs|1
-treffen|to meet|-|Verb|Verbs|1
-verabreden|to arrange a meeting|-|Verb|Verbs|1
-abholen|to pick up|-|Verb|Verbs|1
-anrufen|to call|-|Verb|Verbs|1
-fernsehen|to watch TV|-|Verb|Verbs|1
-einkaufen|to shop|-|Verb|Verbs|1
-spät|late|-|Adjective|Adjectives|1
-früh|early|-|Adjective|Adjectives|1
-pünktlich|on time|-|Adjective|Adjectives|1
-heute|today|-|Adverb|Time|1
-morgen|tomorrow|-|Adverb|Time|1
-gestern|yesterday|-|Adverb|Time|1
-jetzt|now|-|Adverb|Time|1
-immer|always|-|Adverb|Time|1
-oft|often|-|Adverb|Time|1
-manchmal|sometimes|-|Adverb|Time|1
-nie|never|-|Adverb|Time|1
+# FAMILY (FAMILIE)
+Familie|family|f|Noun|Family|1
+Vater|father|m|Noun|Family|1
+Mutter|mother|f|Noun|Family|1
+Eltern|parents|p|Noun|Family|1
+Kind|child|n|Noun|Family|1
+Sohn|son|m|Noun|Family|1
+Tochter|daughter|f|Noun|Family|1
+Bruder|brother|m|Noun|Family|1
+Schwester|sister|f|Noun|Family|1
+Geschwister|siblings|p|Noun|Family|1
+Großeltern|grandparents|f|Noun|Family|1
+Opa|grandpa|m|Noun|Family|1
+Oma|grandma|f|Noun|Family|1
+Mann|man/husband|m|Noun|Family|1
+Frau|woman/wife|f|Noun|Family|1
+Junge|boy|m|Noun|Family|1
+Mädchen|girl|n|Noun|Family|1
+Baby|baby|n|Noun|Family|1
+Freund|friend (m)|m|Noun|Family|1
+Freundin|friend (f)|f|Noun|Family|1
+Gast|guest|m|Noun|Family|1
+Nachbar|neighbor|m|Noun|Family|1
+Tante|aunt|f|Noun|Family|1
+Onkel|uncle|m|Noun|Family|1
+Cousin|cousin (m)|m|Noun|Family|1
+Cousine|cousin (f)|f|Noun|Family|1
+
+# ANIMALS (TIERE)
+Tier|animal|n|Noun|Animals|1
+Hund|dog|m|Noun|Animals|1
+Katze|cat|f|Noun|Animals|1
+Maus|mouse|f|Noun|Animals|1
+Vogel|bird|m|Noun|Animals|1
+Pferd|horse|n|Noun|Animals|1
+Kuh|cow|f|Noun|Animals|1
+Schwein|pig|n|Noun|Animals|1
+Fisch|fish|m|Noun|Animals|1
+Bär|bear|m|Noun|Animals|1
+Ente|duck|f|Noun|Animals|1
+Huhn|chicken|n|Noun|Animals|1
+Elefant|elephant|m|Noun|Animals|1
+Löwe|lion|m|Noun|Animals|1
+Zoo|zoo|m|Noun|Animals|1
+
+# NATURE & WEATHER (NATUR & WETTER)
+Wetter|weather|n|Noun|Nature|1
+Sonne|sun|f|Noun|Nature|1
+Mond|moon|m|Noun|Nature|1
+Stern|star|m|Noun|Nature|1
+Regen|rain|m|Noun|Nature|1
+Schnee|snow|m|Noun|Nature|1
+Wind|wind|m|Noun|Nature|1
+Wolke|cloud|f|Noun|Nature|1
+Baum|tree|m|Noun|Nature|1
+Blume|flower|f|Noun|Nature|1
+Wald|forest|m|Noun|Nature|1
+Berg|mountain|m|Noun|Nature|1
+See|lake|m|Noun|Nature|1
+Meer|sea|n|Noun|Nature|1
+Fluss|river|m|Noun|Nature|1
+regnen|to rain|-|Verb|Nature|1
+schneien|to snow|-|Verb|Nature|1
+scheinen|to shine|-|Verb|Nature|1
+kalt|cold|-|Adjective|Nature|1
+warm|warm|-|Adjective|Nature|1
+heiß|hot|-|Adjective|Nature|1
+Himmel|sky|m|Noun|Nature|1
+Natur|nature|f|Noun|Nature|1
+Wiese|meadow|f|Noun|Nature|1
+Strand|beach|m|Noun|Nature|1
+Insel|island|f|Noun|Nature|1
+
+# COLORS (FARBEN)
+Farbe|color|f|Noun|Colors|1
+rot|red|-|Adjective|Colors|1
+blau|blue|-|Adjective|Colors|1
+grün|green|-|Adjective|Colors|1
+gelb|yellow|-|Adjective|Colors|1
+schwarz|black|-|Adjective|Colors|1
+weiß|white|-|Adjective|Colors|1
+grau|gray|-|Adjective|Colors|1
+braun|brown|-|Adjective|Colors|1
+orange|orange|-|Adjective|Colors|1
+lila|purple|-|Adjective|Colors|1
+rosa|pink|-|Adjective|Colors|1
+hell|light|-|Adjective|Colors|1
+dunkel|dark|-|Adjective|Colors|1
+bunt|colorful|-|Adjective|Colors|1
+golden|golden|-|Adjective|Colors|1
+silbern|silver|-|Adjective|Colors|1
+
+# CLOTHING (KLEIDUNG)
+Kleidung|clothing|f|Noun|Clothing|1
+Hose|trousers|f|Noun|Clothing|1
+Jeans|jeans|f|Noun|Clothing|1
+Rock|skirt|m|Noun|Clothing|1
+Kleid|dress|n|Noun|Clothing|1
+Bluse|blouse|f|Noun|Clothing|1
+Hemd|shirt|n|Noun|Clothing|1
+T-Shirt|T-shirt|n|Noun|Clothing|1
+Pullover|sweater|m|Noun|Clothing|1
+Jacke|jacket|f|Noun|Clothing|1
+Mantel|coat|m|Noun|Clothing|1
+Schuh|shoe|m|Noun|Clothing|1
+Stiefel|boot|m|Noun|Clothing|1
+Socke|sock|f|Noun|Clothing|1
+Hut|hat|m|Noun|Clothing|1
+Mütze|cap|f|Noun|Clothing|1
+Schal|scarf|m|Noun|Clothing|1
+Handschuh|glove|m|Noun|Clothing|1
+Brille|glasses|f|Noun|Clothing|1
+Tasche|bag|f|Noun|Clothing|1
+Rucksack|backpack|m|Noun|Clothing|1
+Koffer|suitcase|m|Noun|Clothing|1
+Geldbeutel|wallet|m|Noun|Clothing|1
+Anzug|suit|m|Noun|Clothing|1
+tragen|to wear|-|Verb|Verbs|1
+anprobieren|to try on|-|Verb|Verbs|1
+passen|to fit|-|Verb|Verbs|1
+
+# VERBS (VERBEN)
+denken|to think|-|Verb|Verbs|1
+wissen|to know (fact)|-|Verb|Verbs|1
+kennen|to know (person)|-|Verb|Verbs|1
+wollen|to want|-|Verb|Verbs|1
+sollen|should|-|Verb|Verbs|1
+müssen|must|-|Verb|Verbs|1
+dürfen|allowed to|-|Verb|Verbs|1
+können|can|-|Verb|Verbs|1
+mögen|to like|-|Verb|Verbs|1
+lieben|to love|-|Verb|Verbs|1
+hassen|to hate|-|Verb|Verbs|1
+kaufen|to buy|-|Verb|Verbs|1
+verkaufen|to sell|-|Verb|Verbs|1
+suchen|to search|-|Verb|Verbs|1
+finden|to find|-|Verb|Verbs|1
+zeigen|to show|-|Verb|Verbs|1
+sehen|to see|-|Verb|Verbs|1
+riechen|to smell|-|Verb|Verbs|1
+fühlen|to feel|-|Verb|Verbs|1
+schmecken|to taste|-|Verb|Verbs|1
+sitzen|to sit|-|Verb|Verbs|1
+stehen|to stand|-|Verb|Verbs|1
+liegen|to lie|-|Verb|Verbs|1
+legen|to lay|-|Verb|Verbs|1
+stellen|to place|-|Verb|Verbs|1
+hängen|to hang|-|Verb|Verbs|1
+warten|to wait|-|Verb|Verbs|1
+glauben|to believe|-|Verb|Verbs|1
+hoffen|to hope|-|Verb|Verbs|1
+bringen|to bring|-|Verb|Verbs|1
+holen|to fetch|-|Verb|Verbs|1
+geben|to give|-|Verb|Verbs|1
+helfen|to help|-|Verb|Verbs|1
+danken|to thank|-|Verb|Verbs|1
+feiern|to celebrate|-|Verb|Verbs|1
+singen|to sing|-|Verb|Verbs|1
+tanzen|to dance|-|Verb|Verbs|1
+spielen|to play|-|Verb|Verbs|1
+lachen|to laugh|-|Verb|Verbs|1
+öffnen|to open|-|Verb|Verbs|1
+schließen|to close|-|Verb|Verbs|1
+beginnen|to begin|-|Verb|Verbs|1
+enden|to end|-|Verb|Verbs|1
+
+# ADJECTIVES (ADJEKTIVE)
+einfach|simple/easy|-|Adjective|Adjectives|1
+schwer|heavy/difficult|-|Adjective|Adjectives|1
+offen|open|-|Adjective|Adjectives|1
+geschlossen|closed|-|Adjective|Adjectives|1
+frei|free|-|Adjective|Adjectives|1
+besetzt|occupied|-|Adjective|Adjectives|1
+voll|full|-|Adjective|Adjectives|1
+leer|empty|-|Adjective|Adjectives|1
+hoch|high|-|Adjective|Adjectives|1
+tief|deep|-|Adjective|Adjectives|1
+weit|far|-|Adjective|Adjectives|1
+nah|near|-|Adjective|Adjectives|1
+hart|hard|-|Adjective|Adjectives|1
+weich|soft|-|Adjective|Adjectives|1
+süß|sweet|-|Adjective|Adjectives|1
+sauer|sour|-|Adjective|Adjectives|1
+scharf|spicy/sharp|-|Adjective|Adjectives|1
+frisch|fresh|-|Adjective|Adjectives|1
+fertig|finished|-|Adjective|Adjectives|1
+bereit|ready|-|Adjective|Adjectives|1
+wichtig|important|-|Adjective|Adjectives|1
+gleich|same/equal|-|Adjective|Adjectives|1
+anders|different|-|Adjective|Adjectives|1
+allein|alone|-|Adjective|Adjectives|1
+zusammen|together|-|Adjective|Adjectives|1
+müde|tired|-|Adjective|Adjectives|1
+wach|awake|-|Adjective|Adjectives|1
+glücklich|happy|-|Adjective|Adjectives|1
+traurig|sad|-|Adjective|Adjectives|1
+stark|strong|-|Adjective|Adjectives|1
+schwach|weak|-|Adjective|Adjectives|1
+
+# FOOD & DRINK (ESSEN & TRINKEN)
+Essen|food|n|Noun|Food|1
+Brot|bread|n|Noun|Food|1
+Brötchen|roll|n|Noun|Food|1
+Butter|butter|f|Noun|Food|1
+Käse|cheese|m|Noun|Food|1
+Wurst|sausage|f|Noun|Food|1
+Schinken|ham|m|Noun|Food|1
+Ei|egg|n|Noun|Food|1
+Salz|salt|n|Noun|Food|1
+Pfeffer|pepper|m|Noun|Food|1
+Fleisch|meat|n|Noun|Food|1
+Fisch|fish|m|Noun|Food|1
+Reis|rice|m|Noun|Food|1
+Nudel|noodle|f|Noun|Food|1
+Kartoffel|potato|f|Noun|Food|1
+Salat|salad|m|Noun|Food|1
+Suppe|soup|f|Noun|Food|1
+Obst|fruit|n|Noun|Food|1
+Apfel|apple|m|Noun|Food|1
+Banane|banana|f|Noun|Food|1
+Orange|orange|f|Noun|Food|1
+Gemüse|vegetables|n|Noun|Food|1
+Tomate|tomato|f|Noun|Food|1
+Gurke|cucumber|f|Noun|Food|1
+Zwiebel|onion|f|Noun|Food|1
+Schokolade|chocolate|f|Noun|Food|1
+Kuchen|cake|m|Noun|Food|1
+Eis|ice cream|n|Noun|Food|1
+essen|to eat|-|Verb|Verbs|1
+kochen|to cook|-|Verb|Verbs|1
+schmecken|to taste|-|Verb|Verbs|1
+Hunger|hunger|m|Noun|Food|1
+Durst|thirst|m|Noun|Food|1
+Frühstück|breakfast|n|Noun|Food|1
+Mittagessen|lunch|n|Noun|Food|1
+Abendessen|dinner|n|Noun|Food|1
 
 # UNIT 12: KÖRPER UND GESUNDHEIT
 Körper|body|m|Noun|Body|1
