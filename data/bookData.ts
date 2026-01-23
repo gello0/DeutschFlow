@@ -1,64 +1,16 @@
 
 import { BookUnit } from "../types";
+import { UNIT1_EXERCISES } from "./unit1";
 
 export const BOOK_UNITS: BookUnit[] = [
   // ==========================================
-  // UNIT 1
+  // UNIT 1: Extensive Mode
   // ==========================================
   {
     id: "unit-1",
     title: "Unit 1: Kaffee oder Tee?",
-    description: "Greetings, ordering in a café, and numbers 0-20.",
-    exercises: [
-      {
-        id: "u1-ex1",
-        type: "multiple-choice",
-        prompt: "Situation: You enter a shop in the morning. What do you say?",
-        options: ["Gute Nacht", "Guten Morgen", "Tschüss", "Auf Wiedersehen"],
-        correctAnswer: "Guten Morgen",
-        explanation: "'Guten Morgen' is used until about 11am."
-      },
-      {
-        id: "u1-ex2",
-        type: "fill-gap",
-        prompt: "Complete the order: 'I would like a coffee.'",
-        content: "Ich ______ einen Kaffee.",
-        correctAnswer: "möchte",
-        explanation: "'Möchte' is the polite form of 'wollen' (to want)."
-      },
-      {
-        id: "u1-ex3",
-        type: "arrange",
-        prompt: "Ask for the price.",
-        content: "das / kostet / Was / ?",
-        correctAnswer: "Was kostet das?",
-        explanation: "Standard question structure: W-Word (Was) + Verb (kostet) + Subject (das)?"
-      },
-      {
-        id: "u1-ex4",
-        type: "multiple-choice",
-        prompt: "Choose the correct verb form: 'Wir ___ einen Tee.'",
-        options: ["nehme", "nimmst", "nehmen", "nehmt"],
-        correctAnswer: "nehmen",
-        explanation: "Wir (we) always takes the infinitive form (-en)."
-      },
-      {
-        id: "u1-ex5",
-        type: "fill-gap",
-        prompt: "Conjugate 'sein' (to be): 'Das ___ Herr Müller.'",
-        content: "Das ______ Herr Müller.",
-        correctAnswer: "ist",
-        explanation: "3rd person singular of sein: er/sie/es ist."
-      },
-      {
-        id: "u1-ex6",
-        type: "arrange",
-        prompt: "Pay the bill.",
-        content: "bezahlen / Wir / bitte / möchten / .",
-        correctAnswer: "Wir möchten bitte bezahlen.",
-        explanation: "Modal verb (möchten) in position 2, infinitive (bezahlen) at the end."
-      }
-    ]
+    description: "Greetings, ordering in a café, introductions, and numbers 0-20.",
+    exercises: UNIT1_EXERCISES
   },
 
   // ==========================================
