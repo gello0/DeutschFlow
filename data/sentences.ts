@@ -1,39 +1,107 @@
 
-// Sentences extracted from Studio [21] A1 Units
+// Sentences extracted & expanded based on Studio [21] A1 Curriculum
 export const LOCAL_SENTENCES = [
-  // Unit 1: Kaffee oder Tee?
+  // ==========================================
+  // UNIT 1: Kaffee oder Tee? (Ordering & Basics)
+  // ==========================================
   { german: "Ich möchte einen Kaffee.", english: "I would like a coffee." },
+  { german: "Ich möchte einen Tee.", english: "I would like a tea." },
   { german: "Die Rechnung bitte.", english: "The check please." },
   { german: "Zusammen oder getrennt?", english: "Together or separate?" },
   { german: "Das macht sieben Euro.", english: "That makes seven Euros." },
   { german: "Ich nehme einen Tee mit Zitrone.", english: "I'll take a tea with lemon." },
   { german: "Was trinken Sie?", english: "What are you drinking?" },
   { german: "Ist hier noch frei?", english: "Is this seat free?" },
-  
-  // Unit 2: Sprache im Kurs
+  { german: "Wir bezahlen bitte.", english: "We would like to pay please." },
+  { german: "Ein Wasser ohne Gas bitte.", english: "A water without gas please." },
+  { german: "Trinken Sie gern Kaffee?", english: "Do you like drinking coffee?" },
+  { german: "Nein ich trinke lieber Tee.", english: "No I prefer drinking tea." },
+  { german: "Einen Orangensaft bitte.", english: "An orange juice please." },
+  { german: "Das ist sehr teuer.", english: "That is very expensive." },
+  { german: "Kaffee schmeckt gut.", english: "Coffee tastes good." },
+  { german: "Vielen Dank auf Wiedersehen.", english: "Many thanks goodbye." },
+  { german: "Hallo wie geht es dir?", english: "Hello how are you?" },
+  { german: "Mir geht es gut danke.", english: "I am fine thanks." },
+  { german: "Wie heißen Sie?", english: "What is your name?" },
+  { german: "Ich heiße Anna.", english: "My name is Anna." },
+  { german: "Wer ist das?", english: "Who is that?" },
+  { german: "Das ist mein Freund.", english: "That is my friend." },
+
+  // ==========================================
+  // UNIT 2: Sprache im Kurs (Classroom)
+  // ==========================================
   { german: "Wie schreibt man das?", english: "How do you write that?" },
   { german: "Können Sie das bitte wiederholen?", english: "Can you please repeat that?" },
   { german: "Ich verstehe das nicht.", english: "I do not understand that." },
   { german: "Was heißt das auf Deutsch?", english: "What is that in German?" },
   { german: "Können wir eine Pause machen?", english: "Can we take a break?" },
   { german: "Das ist kein Kuli.", english: "That is not a pen." },
-  
-  // Unit 3: Städte - Länder - Sprachen
+  { german: "Das ist ein Bleistift.", english: "That is a pencil." },
+  { german: "Öffnen Sie das Buch.", english: "Open the book." },
+  { german: "Lesen Sie den Text.", english: "Read the text." },
+  { german: "Schreiben Sie einen Satz.", english: "Write a sentence." },
+  { german: "Sprechen Sie bitte langsam.", english: "Please speak slowly." },
+  { german: "Ist das richtig oder falsch?", english: "Is that correct or wrong?" },
+  { german: "Ich habe eine Frage.", english: "I have a question." },
+  { german: "Wir lernen Deutsch.", english: "We are learning German." },
+  { german: "Das Wort ist schwer.", english: "The word is difficult." },
+  { german: "Bitte buchstabieren Sie das.", english: "Please spell that." },
+  { german: "Welche Seite bitte?", english: "Which page please?" },
+  { german: "Das ist eine Übung.", english: "That is an exercise." },
+  { german: "Hören Sie den Dialog.", english: "Listen to the dialogue." },
+  { german: "Arbeiten Sie zu zweit.", english: "Work in pairs." },
+
+  // ==========================================
+  // UNIT 3: Städte - Länder - Sprachen
+  // ==========================================
   { german: "Ich komme aus der Türkei.", english: "I come from Turkey." },
   { german: "Er wohnt in Berlin.", english: "He lives in Berlin." },
   { german: "Wo liegt das denn?", english: "Where is that located?" },
   { german: "Sprichst du Polnisch?", english: "Do you speak Polish?" },
   { german: "Warst du schon mal in München?", english: "Have you ever been to Munich?" },
-  
-  // Unit 4: Menschen und Häuser
+  { german: "Sie kommt aus Spanien.", english: "She comes from Spain." },
+  { german: "Wir wohnen in Deutschland.", english: "We live in Germany." },
+  { german: "München liegt im Süden.", english: "Munich is located in the south." },
+  { german: "Berlin ist die Hauptstadt.", english: "Berlin is the capital." },
+  { german: "Ich spreche ein bisschen Deutsch.", english: "I speak a little German." },
+  { german: "Meine Muttersprache ist Englisch.", english: "My mother tongue is English." },
+  { german: "Woher kommen Sie?", english: "Where do you come from?" },
+  { german: "Hamburg liegt im Norden.", english: "Hamburg is located in the north." },
+  { german: "Das ist eine schöne Stadt.", english: "That is a beautiful city." },
+  { german: "Wohnst du hier?", english: "Do you live here?" },
+  { german: "Er spricht drei Sprachen.", english: "He speaks three languages." },
+  { german: "Die Stadt ist sehr groß.", english: "The city is very big." },
+  { german: "Das Land ist schön.", english: "The country is beautiful." },
+  { german: "Kommst du aus Italien?", english: "Do you come from Italy?" },
+  { german: "Frankfurt liegt in der Mitte.", english: "Frankfurt is located in the middle." },
+
+  // ==========================================
+  // UNIT 4: Menschen und Häuser (Housing)
+  // ==========================================
   { german: "Die Wohnung hat einen Balkon.", english: "The apartment has a balcony." },
   { german: "Mein Zimmer ist sehr klein.", english: "My room is very small." },
   { german: "Wir suchen eine Altbauwohnung.", english: "We are looking for an old-building apartment." },
   { german: "Der Flur ist lang und dunkel.", english: "The hallway is long and dark." },
   { german: "Das Sofa ist gemütlich.", english: "The sofa is cozy." },
   { german: "Ich finde die Küche schön.", english: "I find the kitchen beautiful." },
-  
-  // Unit 5: Termine
+  { german: "Die Miete ist zu hoch.", english: "The rent is too high." },
+  { german: "Wir haben keinen Garten.", english: "We have no garden." },
+  { german: "Das Bad ist modern.", english: "The bathroom is modern." },
+  { german: "Hier ist das Wohnzimmer.", english: "Here is the living room." },
+  { german: "Der Tisch steht in der Küche.", english: "The table stands in the kitchen." },
+  { german: "Das Bett ist bequem.", english: "The bed is comfortable." },
+  { german: "Ich brauche einen Schrank.", english: "I need a cupboard." },
+  { german: "Die Lampe ist hell.", english: "The lamp is bright." },
+  { german: "Das Haus ist alt.", english: "The house is old." },
+  { german: "Wo ist die Toilette?", english: "Where is the toilet?" },
+  { german: "Wir wohnen im dritten Stock.", english: "We live on the third floor." },
+  { german: "Gibt es einen Aufzug?", english: "Is there an elevator?" },
+  { german: "Die Möbel sind neu.", english: "The furniture is new." },
+  { german: "Ich mag mein Zimmer.", english: "I like my room." },
+
+  // ==========================================
+  // UNIT 5: Termine (Time & Dates)
+  // ==========================================
   { german: "Wie spät ist es?", english: "What time is it?" },
   { german: "Der Zug fährt um acht Uhr.", english: "The train leaves at eight o'clock." },
   { german: "Wann hast du Zeit?", english: "When do you have time?" },
@@ -41,52 +109,180 @@ export const LOCAL_SENTENCES = [
   { german: "Am Montag arbeite ich nicht.", english: "I don't work on Monday." },
   { german: "Ich habe einen Termin beim Arzt.", english: "I have an appointment at the doctor." },
   { german: "Es ist Viertel nach drei.", english: "It is quarter past three." },
-  
-  // Unit 6: Orientierung
+  { german: "Der Film fängt gleich an.", english: "The movie starts right now." },
+  { german: "Hast du am Wochenende Zeit?", english: "Do you have time on the weekend?" },
+  { german: "Ich muss morgen arbeiten.", english: "I have to work tomorrow." },
+  { german: "Heute ist mein Geburtstag.", english: "Today is my birthday." },
+  { german: "Wann beginnt der Kurs?", english: "When does the course begin?" },
+  { german: "Wir gehen am Abend ins Kino.", english: "We are going to the cinema in the evening." },
+  { german: "Es ist halb fünf.", english: "It is half past four." },
+  { german: "Der Termin ist um zehn Uhr.", english: "The appointment is at ten o'clock." },
+  { german: "Ich stehe früh auf.", english: "I get up early." },
+  { german: "Wann kommst du nach Hause?", english: "When are you coming home?" },
+  { german: "Am Sonntag schlafe ich lange.", english: "On Sunday I sleep long." },
+  { german: "Die Woche hat sieben Tage.", english: "The week has seven days." },
+  { german: "Ich habe heute keine Zeit.", english: "I have no time today." },
+
+  // ==========================================
+  // UNIT 6: Orientierung (Directions)
+  // ==========================================
   { german: "Entschuldigung wo ist der Bahnhof?", english: "Excuse me where is the station?" },
   { german: "Gehen Sie geradeaus.", english: "Go straight ahead." },
   { german: "Dann die zweite Straße rechts.", english: "Then the second street to the right." },
   { german: "Die Post ist neben der Bank.", english: "The post office is next to the bank." },
   { german: "Ich fahre mit der Straßenbahn.", english: "I am going by tram." },
   { german: "Wie komme ich zum Museum?", english: "How do I get to the museum?" },
-  
-  // Unit 7: Berufe
+  { german: "Biegen Sie links ab.", english: "Turn left." },
+  { german: "Ist das weit von hier?", english: "Is that far from here?" },
+  { german: "Nehmen Sie den Bus.", english: "Take the bus." },
+  { german: "Das ist in der Nähe.", english: "That is nearby." },
+  { german: "Wo ist die Haltestelle?", english: "Where is the stop?" },
+  { german: "Fahren Sie bis zum Platz.", english: "Drive until the square." },
+  { german: "Das Hotel ist dort drüben.", english: "The hotel is over there." },
+  { german: "Ich suche den Supermarkt.", english: "I am looking for the supermarket." },
+  { german: "Gehen Sie über die Brücke.", english: "Go over the bridge." },
+  { german: "Es ist an der Ecke.", english: "It is at the corner." },
+  { german: "Ich gehe zu Fuß.", english: "I am going on foot." },
+  { german: "Fährst du mit dem Auto?", english: "Are you going by car?" },
+  { german: "Wo ist der Flughafen?", english: "Where is the airport?" },
+  { german: "Da vorne ist ein Taxi.", english: "There is a taxi up ahead." },
+
+  // ==========================================
+  // UNIT 7: Berufe (Work)
+  // ==========================================
   { german: "Was sind Sie von Beruf?", english: "What is your profession?" },
   { german: "Ich arbeite als Ingenieur.", english: "I work as an engineer." },
   { german: "Die Arbeit macht Spaß.", english: "The work is fun." },
   { german: "Ich muss viele E-Mails schreiben.", english: "I have to write many emails." },
   { german: "Meine Kollegen sind sehr nett.", english: "My colleagues are very nice." },
-  
-  // Unit 8: Berlin sehen
+  { german: "Ich bin Studentin.", english: "I am a student (female)." },
+  { german: "Er arbeitet bei Siemens.", english: "He works at Siemens." },
+  { german: "Ich habe keinen Job.", english: "I have no job." },
+  { german: "Was machst du beruflich?", english: "What do you do for a living?" },
+  { german: "Ich bin Arzt von Beruf.", english: "I am a doctor by profession." },
+  { german: "Die Firma ist groß.", english: "The company is big." },
+  { german: "Ich arbeite im Büro.", english: "I work in the office." },
+  { german: "Der Chef ist heute nicht da.", english: "The boss is not here today." },
+  { german: "Ich suche eine neue Stelle.", english: "I am looking for a new position." },
+  { german: "Arbeitest du am Computer?", english: "Do you work at the computer?" },
+  { german: "Ich habe viel Stress.", english: "I have a lot of stress." },
+  { german: "Wann hast du Feierabend?", english: "When do you finish work?" },
+  { german: "Ich verdiene nicht viel.", english: "I do not earn much." },
+  { german: "Das ist mein Traumberuf.", english: "That is my dream job." },
+  { german: "Wir haben ein Meeting.", english: "We have a meeting." },
+
+  // ==========================================
+  // UNIT 8: Berlin sehen (Sightseeing)
+  // ==========================================
   { german: "Wir wollen den Reichstag besichtigen.", english: "We want to visit the Reichstag." },
   { german: "Zuerst gehen wir ins Museum.", english: "First we are going to the museum." },
   { german: "Danach essen wir ein Eis.", english: "Afterwards we will eat an ice cream." },
-  
-  // Unit 9: Ab in den Urlaub (Perfekt)
+  { german: "Das Brandenburger Tor ist berühmt.", english: "The Brandenburg Gate is famous." },
+  { german: "Wir machen eine Stadtrundfahrt.", english: "We are doing a city tour." },
+  { german: "Die Tickets sind teuer.", english: "The tickets are expensive." },
+  { german: "Ich mache viele Fotos.", english: "I take many photos." },
+  { german: "Können wir den Turm sehen?", english: "Can we see the tower?" },
+  { german: "Der Reiseführer ist gut.", english: "The guidebook is good." },
+  { german: "Berlin ist eine Reise wert.", english: "Berlin is worth a trip." },
+  { german: "Wo ist die Mauer?", english: "Where is the wall?" },
+  { german: "Wir gehen spazieren.", english: "We are going for a walk." },
+  { german: "Das Schloss ist sehr alt.", english: "The castle is very old." },
+  { german: "Es gibt viele Touristen.", english: "There are many tourists." },
+  { german: "Kaufen wir eine Postkarte?", english: "Shall we buy a postcard?" },
+
+  // ==========================================
+  // UNIT 9: Ab in den Urlaub (Past Tense)
+  // ==========================================
   { german: "Wir sind nach Italien gefahren.", english: "We drove to Italy." },
   { german: "Ich habe im Meer gebadet.", english: "I bathed in the sea." },
   { german: "Wir haben eine Radtour gemacht.", english: "We did a bike tour." },
   { german: "Das Wetter war super.", english: "The weather was super." },
   { german: "Ich habe viel geschlafen.", english: "I slept a lot." },
-  
-  // Unit 10: Essen und Trinken
+  { german: "Wir haben im Hotel übernachtet.", english: "We stayed overnight in a hotel." },
+  { german: "Hast du den Strand gesehen?", english: "Did you see the beach?" },
+  { german: "Wir sind gewandert.", english: "We went hiking." },
+  { german: "Ich habe Pizza gegessen.", english: "I ate pizza." },
+  { german: "Bist du geflogen?", english: "Did you fly?" },
+  { german: "Der Urlaub war zu kurz.", english: "The vacation was too short." },
+  { german: "Wir haben Freunde getroffen.", english: "We met friends." },
+  { german: "Ich habe ein Buch gelesen.", english: "I read a book." },
+  { german: "Es hat geregnet.", english: "It rained." },
+  { german: "Wir sind zu Hause geblieben.", english: "We stayed at home." },
+  { german: "Ich habe nichts gemacht.", english: "I did nothing." },
+  { german: "Warst du schon mal dort?", english: "Have you ever been there?" },
+  { german: "Wir haben viel gelacht.", english: "We laughed a lot." },
+  { german: "Ich habe Souvenirs gekauft.", english: "I bought souvenirs." },
+  { german: "Die Reise war schön.", english: "The trip was nice." },
+
+  // ==========================================
+  // UNIT 10: Essen und Trinken (Food)
+  // ==========================================
   { german: "Ich esse gern Kartoffeln.", english: "I like eating potatoes." },
   { german: "Möchtest du noch etwas?", english: "Would you like something else?" },
   { german: "Das schmeckt sehr gut.", english: "That tastes very good." },
   { german: "Ich hätte gern ein Kilo Äpfel.", english: "I would like a kilo of apples." },
   { german: "Was kosten die Tomaten?", english: "What do the tomatoes cost?" },
-  
-  // Unit 11: Kleidung
+  { german: "Ich brauche noch Eier.", english: "I still need eggs." },
+  { german: "Hast du Hunger?", english: "Are you hungry?" },
+  { german: "Wir kochen heute Abend.", english: "We are cooking this evening." },
+  { german: "Das Brot ist frisch.", english: "The bread is fresh." },
+  { german: "Ich mag keinen Fisch.", english: "I don't like fish." },
+  { german: "Trinkst du Wein?", english: "Do you drink wine?" },
+  { german: "Guten Appetit!", english: "Enjoy your meal!" },
+  { german: "Die Suppe ist heiß.", english: "The soup is hot." },
+  { german: "Ich esse kein Fleisch.", english: "I eat no meat." },
+  { german: "Hast du Durst?", english: "Are you thirsty?" },
+  { german: "Ich gehe zum Markt.", english: "I am going to the market." },
+  { german: "Kaufst du Milch?", english: "Are you buying milk?" },
+  { german: "Das Obst ist lecker.", english: "The fruit is yummy." },
+  { german: "Zum Frühstück esse ich Müsli.", english: "For breakfast I eat muesli." },
+  { german: "Was ist dein Lieblingsessen?", english: "What is your favorite food?" },
+
+  // ==========================================
+  // UNIT 11: Kleidung (Shopping)
+  // ==========================================
   { german: "Die Jacke gefällt mir nicht.", english: "I don't like the jacket." },
   { german: "Ich trage gern Jeans.", english: "I like wearing jeans." },
   { german: "Welche Größe haben Sie?", english: "What size do you have?" },
   { german: "Der Pullover ist zu groß.", english: "The sweater is too big." },
   { german: "Kann ich das anprobieren?", english: "Can I try this on?" },
-  
-  // Unit 12: Körper und Gesundheit
+  { german: "Die Farbe steht dir gut.", english: "The color suits you well." },
+  { german: "Das Kleid ist schön.", english: "The dress is beautiful." },
+  { german: "Ich suche eine Hose.", english: "I am looking for trousers." },
+  { german: "Das Hemd ist zu teuer.", english: "The shirt is too expensive." },
+  { german: "Wo ist die Kasse?", english: "Where is the checkout?" },
+  { german: "Haben Sie das in Rot?", english: "Do you have this in red?" },
+  { german: "Die Schuhe sind bequem.", english: "The shoes are comfortable." },
+  { german: "Ich nehme den Rock.", english: "I'll take the skirt." },
+  { german: "Das T-Shirt passt perfekt.", english: "The T-shirt fits perfectly." },
+  { german: "Ich schaue nur.", english: "I am only looking." },
+  { german: "Im Winter trage ich einen Mantel.", english: "In winter I wear a coat." },
+  { german: "Der Anzug ist elegant.", english: "The suit is elegant." },
+  { german: "Hast du eine neue Bluse?", english: "Do you have a new blouse?" },
+  { german: "Die Stiefel sind warm.", english: "The boots are warm." },
+  { german: "Ich gehe shoppen.", english: "I am going shopping." },
+
+  // ==========================================
+  // UNIT 12: Körper und Gesundheit (Health)
+  // ==========================================
   { german: "Mein Kopf tut weh.", english: "My head hurts." },
   { german: "Ich habe Fieber und Schnupfen.", english: "I have a fever and a cold." },
   { german: "Du musst im Bett bleiben.", english: "You must stay in bed." },
   { german: "Nehmen Sie die Tabletten.", english: "Take the pills." },
-  { german: "Gute Besserung!", english: "Get well soon!" }
+  { german: "Gute Besserung!", english: "Get well soon!" },
+  { german: "Ich bin krank.", english: "I am sick." },
+  { german: "Ich muss zum Arzt.", english: "I have to go to the doctor." },
+  { german: "Mein Hals tut weh.", english: "My throat hurts." },
+  { german: "Hast du Schmerzen?", english: "Do you have pain?" },
+  { german: "Der Rücken tut mir weh.", english: "My back hurts." },
+  { german: "Ich fühle mich nicht gut.", english: "I don't feel well." },
+  { german: "Geh zur Apotheke.", english: "Go to the pharmacy." },
+  { german: "Trink viel Tee.", english: "Drink a lot of tea." },
+  { german: "Hast du Husten?", english: "Do you have a cough?" },
+  { german: "Ich bin gesund.", english: "I am healthy." },
+  { german: "Mein Bein ist gebrochen.", english: "My leg is broken." },
+  { german: "Ich brauche ein Pflaster.", english: "I need a band-aid." },
+  { german: "Mach einen Termin.", english: "Make an appointment." },
+  { german: "Bleib zu Hause.", english: "Stay at home." },
+  { german: "Das ist nicht schlimm.", english: "That is not bad." }
 ];

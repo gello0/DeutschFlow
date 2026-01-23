@@ -38,7 +38,8 @@ export enum AppView {
   Numbers = 'numbers',
   Chat = 'chat',
   SentenceBuilder = 'sentences',
-  Settings = 'settings'
+  Settings = 'settings',
+  Book = 'book' // New Book Mode
 }
 
 export interface ChatMessage {
@@ -58,7 +59,7 @@ export interface Scenario {
 }
 
 export interface SentencePuzzle {
-  id: string; // Added ID for tracking
+  id: string; 
   german: string;
   english: string;
 }
@@ -67,6 +68,27 @@ export interface SentenceProgress {
   id: string;
   attempts: number;
   successCount: number;
-  lastSeen: number; // Timestamp
+  lastSeen: number; 
   status: 'new' | 'learning' | 'mastered';
+}
+
+// === BOOK MODE TYPES ===
+
+export type ExerciseType = 'multiple-choice' | 'fill-gap' | 'arrange';
+
+export interface BookExercise {
+  id: string;
+  type: ExerciseType;
+  prompt: string; // The question or instruction
+  content?: string; // Context sentence (for fill-gap) or words to arrange
+  options?: string[]; // For Multiple Choice
+  correctAnswer: string; // The correct string to match
+  explanation: string; // Why is this correct?
+}
+
+export interface BookUnit {
+  id: string;
+  title: string;
+  description: string;
+  exercises: BookExercise[];
 }
