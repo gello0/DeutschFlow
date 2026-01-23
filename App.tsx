@@ -8,6 +8,7 @@ import Journal from './components/Journal';
 import ConjugationDrill from './components/ConjugationDrill';
 import NumberGame from './components/NumberGame';
 import GrammarGuide from './components/GrammarGuide';
+import ChatTutor from './components/ChatTutor';
 
 const SESSION_SIZE = 15; // Learning Chunk Size
 
@@ -49,7 +50,6 @@ const App: React.FC = () => {
     const shuffled = [...pool].sort(() => 0.5 - Math.random());
     
     // Take chunk
-    // If specific topic selected, we might want slightly more, but 15 is good for retention.
     return shuffled.slice(0, SESSION_SIZE);
   };
 
@@ -128,8 +128,6 @@ const App: React.FC = () => {
       if (category) setCurrentTopic(category);
       else setCurrentTopic(null);
 
-      // Using the service logic (now static)
-      // Small delay handled by service promise, but we can do a UI set here
       const newBatch = await generateVocabulary(level, category);
       
       setWords(newBatch);
@@ -377,6 +375,14 @@ const App: React.FC = () => {
         );
     }
 
+    if (currentView === AppView.Chat) {
+        return (
+            <div className="h-full pt-4 pb-24">
+                <ChatTutor level={level} />
+            </div>
+        );
+    }
+
     if (currentView === AppView.Drills) {
       return (
         <div className="h-full pt-4 pb-24">
@@ -498,6 +504,16 @@ const App: React.FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
             <span className="text-[10px] font-medium">Learn</span>
+          </button>
+
+          <button 
+            onClick={() => setCurrentView(AppView.Chat)}
+            className={`flex flex-col items-center gap-1 transition-colors ${currentView === AppView.Chat ? 'text-black dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}
+          >
+             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+             </svg>
+             <span className="text-[10px] font-medium">Tutor</span>
           </button>
           
           <button 

@@ -36,6 +36,7 @@ export enum AppView {
   Journal = 'journal',
   Drills = 'drills',
   Numbers = 'numbers',
+  Chat = 'chat',
   Settings = 'settings'
 }
 
