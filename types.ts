@@ -58,6 +58,15 @@ export interface Scenario {
 }
 
 export interface SentencePuzzle {
+  id: string; // Added ID for tracking
   german: string;
   english: string;
+}
+
+export interface SentenceProgress {
+  id: string;
+  attempts: number;
+  successCount: number;
+  lastSeen: number; // Timestamp
+  status: 'new' | 'learning' | 'mastered';
 }

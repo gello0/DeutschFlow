@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { AppView, DifficultyLevel, VocabWord } from './types';
 import { generateVocabulary } from './services/geminiService';
-import { LOCAL_VOCAB } from './data/fallbackData';
+import { LOCAL_VOCAB } from './data/vocab';
 import Flashcard from './components/Flashcard';
 import Journal from './components/Journal';
 import ConjugationDrill from './components/ConjugationDrill';

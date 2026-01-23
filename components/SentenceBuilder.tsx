@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
-import { DifficultyLevel, SentencePuzzle } from '../types';
+import { DifficultyLevel, SentencePuzzle, SentenceProgress } from '../types';
 import { generateSentencePuzzle, speakText } from '../services/geminiService';
 
 interface SentenceBuilderProps {
@@ -12,23 +13,54 @@ const SentenceBuilder: React.FC<SentenceBuilderProps> = ({ level }) => {
   const [selectedWords, setSelectedWords] = useState<{ id: string, text: string }[]>([]);
   const [status, setStatus] = useState<'playing' | 'correct' | 'wrong'>('playing');
   const [loading, setLoading] = useState(false);
+  
+  // SRS State
+  const [progressData, setProgressData] = useState<Record<string, SentenceProgress>>({});
+
+  // Load progress from local storage on mount
+  useEffect(() => {
+      const saved = localStorage.getItem('sentence_progress');
+      if (saved) {
+          setProgressData(JSON.parse(saved));
+      }
+  }, []);
+
+  // Save progress whenever it changes
+  useEffect(() => {
+      if (Object.keys(progressData).length > 0) {
+          localStorage.setItem('sentence_progress', JSON.stringify(progressData));
+      }
+  }, [progressData]);
 
   const fetchPuzzle = async () => {
     setLoading(true);
     setStatus('playing');
     setSelectedWords([]);
     
-    const newPuzzle = await generateSentencePuzzle(level);
+    // SRS Logic: Pick a sentence
+    // 1. Prioritize 'learning' status (got wrong previously)
+    // 2. Then 'new' (never seen)
+    // 3. Then 'mastered' (review occasionally)
+    
+    // We pass excludes to the generator to try and get something fresh if possible, 
+    // but the generator logic actually needs to know what we WANT to see if we are reviewing.
+    // For this simple version, we will let the generator give us something, and if it's new, great.
+    // If we want to review, we need a way to force a specific sentence.
+    // Since our generator currently randomizes, we will pass a list of "mastered" items to EXCLUDE
+    // so we see new or difficult ones more often.
+    
+    const masteredIds = Object.values(progressData)
+        .filter(p => p.status === 'mastered')
+        .map(p => p.id);
+
+    const newPuzzle = await generateSentencePuzzle(level, masteredIds);
+    
     if (newPuzzle) {
         setPuzzle(newPuzzle);
-        // Clean punctuation for splitting (keep simple)
+        // Clean punctuation
         const cleanSentence = newPuzzle.german.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
         const words = cleanSentence.split(/\s+/);
-        
-        // Create objects with unique IDs to handle duplicate words
         const wordObjects = words.map((w, i) => ({ id: `${w}-${i}`, text: w }));
-        
-        // Shuffle
         const shuffled = [...wordObjects].sort(() => 0.5 - Math.random());
         setAvailableWords(shuffled);
     }
@@ -51,19 +83,45 @@ const SentenceBuilder: React.FC<SentenceBuilderProps> = ({ level }) => {
     setAvailableWords(prev => [...prev, wordObj]);
   };
 
+  const updateProgress = (isCorrect: boolean) => {
+      if (!puzzle) return;
+      
+      setProgressData(prev => {
+          const current = prev[puzzle.german] || { 
+              id: puzzle.german, 
+              attempts: 0, 
+              successCount: 0, 
+              lastSeen: 0, 
+              status: 'new' 
+          };
+
+          const newStats: SentenceProgress = {
+              ...current,
+              attempts: current.attempts + 1,
+              lastSeen: Date.now(),
+              successCount: isCorrect ? current.successCount + 1 : current.successCount,
+              // If wrong, downgrade to 'learning'. If correct and was 'new'/'learning', maybe 'mastered' after a few tries?
+              // Simple logic: 1 wrong -> learning. 3 correct in a row -> mastered.
+              status: !isCorrect ? 'learning' : (current.successCount + 1 >= 3 ? 'mastered' : 'learning')
+          };
+
+          return { ...prev, [puzzle.german]: newStats };
+      });
+  };
+
   const checkAnswer = () => {
     if (!puzzle) return;
     
     const constructed = selectedWords.map(w => w.text).join(' ');
-    // Simple normalization for check: remove punctuation from target, ignore case for now or strict?
-    // Let's do strict case but loose punctuation
     const targetClean = puzzle.german.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "").trim();
     
     if (constructed === targetClean) {
         setStatus('correct');
-        speakText(puzzle.german);
+        speakText(puzzle.german); // Use the new TTS function
+        updateProgress(true);
     } else {
         setStatus('wrong');
+        updateProgress(false);
     }
   };
 
@@ -78,11 +136,25 @@ const SentenceBuilder: React.FC<SentenceBuilderProps> = ({ level }) => {
 
   if (!puzzle) return <div>Error loading.</div>;
 
+  // Get current status for UI feedback
+  const itemProgress = progressData[puzzle.german];
+
   return (
     <div className="flex flex-col h-full max-w-2xl mx-auto px-4 pb-24 pt-4">
-      <div className="text-center mb-8">
+      <div className="text-center mb-8 relative">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Satzbau</h2>
         <p className="text-gray-500 dark:text-gray-400">Build the sentence</p>
+        
+        {/* SRS Indicator */}
+        {itemProgress && (
+            <div className={`absolute top-0 right-0 text-[10px] px-2 py-1 rounded border ${
+                itemProgress.status === 'learning' ? 'bg-orange-50 border-orange-200 text-orange-600' :
+                itemProgress.status === 'mastered' ? 'bg-green-50 border-green-200 text-green-600' :
+                'bg-gray-50 border-gray-200 text-gray-500'
+            }`}>
+                {itemProgress.status === 'learning' ? 'Reviewing' : itemProgress.status === 'mastered' ? 'Mastered' : 'New'}
+            </div>
+        )}
       </div>
 
       <div className="bg-white dark:bg-[#1e1e1e] rounded-3xl shadow-lg border border-gray-100 dark:border-gray-800 p-6 flex flex-col items-center flex-grow">
@@ -131,8 +203,9 @@ const SentenceBuilder: React.FC<SentenceBuilderProps> = ({ level }) => {
           )}
           
           {status === 'wrong' && (
-              <div className="mb-6 text-red-500 font-bold animate-pulse">
-                  Not quite right. Try again!
+              <div className="mb-6 text-red-500 font-bold animate-pulse text-center">
+                  Not quite right. Try again! <br/>
+                  <span className="text-xs font-normal opacity-80">(This sentence will appear more often now)</span>
               </div>
           )}
 
