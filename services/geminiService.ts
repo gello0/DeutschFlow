@@ -97,7 +97,7 @@ export const sendMessageToTutor = async (
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3-flash-preview',
+            model: 'gemini-2.5-flash',
             contents: contents,
             config: {
                 systemInstruction: systemInstruction,
@@ -147,7 +147,7 @@ export const generateSentencePuzzle = async (level: DifficultyLevel): Promise<Se
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3-flash-preview',
+            model: 'gemini-2.5-flash',
             contents: prompt,
             config: {
                 responseMimeType: 'application/json',
