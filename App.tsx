@@ -9,6 +9,7 @@ import ConjugationDrill from './components/ConjugationDrill';
 import NumberGame from './components/NumberGame';
 import GrammarGuide from './components/GrammarGuide';
 import ChatTutor from './components/ChatTutor';
+import SentenceBuilder from './components/SentenceBuilder';
 
 const SESSION_SIZE = 15; // Learning Chunk Size
 
@@ -27,9 +28,10 @@ const App: React.FC = () => {
   // Favorites
   const [favorites, setFavorites] = useState<VocabWord[]>([]);
 
-  // Adaptive Learning State
+  // Stats State
   const [correctStreak, setCorrectStreak] = useState(0);
   const [wrongStreak, setWrongStreak] = useState(0);
+  const [sessionStats, setSessionStats] = useState({ correct: 0, wrong: 0 });
 
   // Helper: Get a fresh batch of words based on level AND optional category
   const getFreshBatch = (lvl: DifficultyLevel, category?: string): VocabWord[] => {
@@ -134,12 +136,20 @@ const App: React.FC = () => {
       setCurrentWordIndex(0);
       setCorrectStreak(0);
       setWrongStreak(0);
+      setSessionStats({ correct: 0, wrong: 0 }); // Reset session stats
       setLearnMode('flashcards');
       setLoadingWords(false);
   };
 
   const handleCardResult = (difficulty: 'hard' | 'easy') => {
-    // Only fetch more/track metrics if NOT in favorites mode
+    // Update Session Stats (Cumulative)
+    if (difficulty === 'easy') {
+        setSessionStats(prev => ({ ...prev, correct: prev.correct + 1 }));
+    } else {
+        setSessionStats(prev => ({ ...prev, wrong: prev.wrong + 1 }));
+    }
+
+    // Adaptive Logic / Streaks (Only update streaks if not in favorites mode to preserve gamification logic)
     if (learnMode !== 'favorites') {
         if (difficulty === 'easy') {
             setCorrectStreak(prev => prev + 1);
@@ -161,7 +171,7 @@ const App: React.FC = () => {
         return (
           <div className="flex flex-col items-center justify-center min-h-full max-w-2xl mx-auto px-6 pb-20 pt-8">
              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 text-center">Learning Hub</h1>
-             <p className="text-gray-500 dark:text-gray-400 mb-8 text-center">Your A1/A2 Path</p>
+             <p className="text-gray-500 dark:text-gray-400 mb-8 text-center">Your {level.split(' ')[0]} Path</p>
              
              <div className="grid gap-4 w-full max-w-md">
                 {/* 1. MAIN ACTIONS */}
@@ -174,7 +184,7 @@ const App: React.FC = () => {
                    </div>
                    <div className="flex-1">
                       <h3 className="font-bold text-white text-lg">Daily Session</h3>
-                      <p className="text-sm text-gray-300">Smart Mix (15 words)</p>
+                      <p className="text-sm text-gray-300">New AI Words (15)</p>
                    </div>
                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -187,6 +197,7 @@ const App: React.FC = () => {
                           if(favorites.length > 0) {
                               setCurrentWordIndex(0);
                               setLearnMode('favorites');
+                              setSessionStats({ correct: 0, wrong: 0 }); // Reset for favorites review
                           }
                       }}
                       className={`bg-white dark:bg-[#1e1e1e] p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col items-center justify-center gap-2 text-center transition-all ${favorites.length === 0 ? 'opacity-60' : 'hover:border-red-400'}`}
@@ -220,13 +231,19 @@ const App: React.FC = () => {
                       onClick={() => setLearnMode('grammar')}
                       className="flex-shrink-0 bg-purple-50 dark:bg-purple-900/10 border border-purple-100 dark:border-purple-800 px-4 py-3 rounded-xl flex items-center gap-2 text-purple-700 dark:text-purple-300 text-sm font-bold w-1/2 justify-center"
                     >
-                       📚 Grammar Guide
+                       📚 Grammar
                     </button>
                     <button 
                       onClick={() => setCurrentView(AppView.Drills)}
                       className="flex-shrink-0 bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-green-800 px-4 py-3 rounded-xl flex items-center gap-2 text-green-700 dark:text-green-300 text-sm font-bold w-1/2 justify-center"
                     >
-                       🔄 Verb Drills
+                       🔄 Verbs
+                    </button>
+                    <button 
+                      onClick={() => setCurrentView(AppView.SentenceBuilder)}
+                      className="flex-shrink-0 bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800 px-4 py-3 rounded-xl flex items-center gap-2 text-blue-700 dark:text-blue-300 text-sm font-bold w-1/2 justify-center"
+                    >
+                       🧩 Sentences
                     </button>
                 </div>
 
@@ -332,11 +349,11 @@ const App: React.FC = () => {
                
                <div className="grid grid-cols-2 gap-4 mb-6">
                    <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-xl">
-                       <span className="block text-xl font-bold text-green-600 dark:text-green-400">{correctStreak}</span>
+                       <span className="block text-xl font-bold text-green-600 dark:text-green-400">{sessionStats.correct}</span>
                        <span className="text-xs text-gray-500 dark:text-gray-400">Easy</span>
                    </div>
                    <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl">
-                       <span className="block text-xl font-bold text-red-600 dark:text-red-400">{wrongStreak}</span>
+                       <span className="block text-xl font-bold text-red-600 dark:text-red-400">{sessionStats.wrong}</span>
                        <span className="text-xs text-gray-500 dark:text-gray-400">Hard</span>
                    </div>
                </div>
@@ -346,6 +363,7 @@ const App: React.FC = () => {
                       onClick={() => {
                           if(learnMode === 'favorites') {
                               setCurrentWordIndex(0); // Restart favorites
+                              setSessionStats({ correct: 0, wrong: 0 }); // Reset for favorites review
                           } else {
                               startNewSession(currentTopic || undefined);
                           }
@@ -395,6 +413,14 @@ const App: React.FC = () => {
       return (
         <div className="h-full pt-4 pb-24">
           <NumberGame level={level} />
+        </div>
+      );
+    }
+
+    if (currentView === AppView.SentenceBuilder) {
+      return (
+        <div className="h-full pt-4 pb-24">
+          <SentenceBuilder level={level} />
         </div>
       );
     }
@@ -517,23 +543,13 @@ const App: React.FC = () => {
           </button>
           
           <button 
-            onClick={() => setCurrentView(AppView.Drills)}
-            className={`flex flex-col items-center gap-1 transition-colors ${currentView === AppView.Drills ? 'text-black dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}
+            onClick={() => setCurrentView(AppView.SentenceBuilder)}
+            className={`flex flex-col items-center gap-1 transition-colors ${currentView === AppView.SentenceBuilder ? 'text-black dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
             </svg>
-            <span className="text-[10px] font-medium">Verbs</span>
-          </button>
-
-          <button 
-            onClick={() => setCurrentView(AppView.Numbers)}
-            className={`flex flex-col items-center gap-1 transition-colors ${currentView === AppView.Numbers ? 'text-black dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
-            </svg>
-            <span className="text-[10px] font-medium">Numbers</span>
+            <span className="text-[10px] font-medium">Sentences</span>
           </button>
 
            <button 

@@ -3,14 +3,74 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { VocabWord, DifficultyLevel, VerbDrill, ChatMessage, SentencePuzzle } from "../types";
 import { LOCAL_VOCAB, LOCAL_VERBS } from "../data/fallbackData";
 
-// 1. Generate Vocabulary (Static from Local DB)
+// 1. Generate Vocabulary (Dynamic via Gemini with Local Fallback)
 export const generateVocabulary = async (
   level: DifficultyLevel, 
   category?: string
 ): Promise<VocabWord[]> => {
-    // Artificial delay to simulate "loading" feels better in UI
+    // Artificial delay for UI consistency
     await new Promise(resolve => setTimeout(resolve, 300));
 
+    // Try Gemini First
+    if (process.env.API_KEY) {
+        try {
+            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            const prompt = `Generate 10 German vocabulary words for level ${level} ${category ? `related to "${category}"` : ''}.
+            Include nouns (with gender), verbs, adjectives, or phrases.
+            Return a JSON array where each object has:
+            - german: string (the word/phrase)
+            - english: string (translation)
+            - gender: 'der', 'die', 'das', or '' (empty for non-nouns)
+            - type: 'Noun', 'Verb', 'Adjective', 'Phrase'
+            - exampleGerman: a simple example sentence using the word
+            - exampleEnglish: translation of the example sentence
+            `;
+
+            const response = await ai.models.generateContent({
+                model: 'gemini-2.5-flash',
+                contents: prompt,
+                config: {
+                    responseMimeType: 'application/json',
+                    responseSchema: {
+                        type: Type.ARRAY,
+                        items: {
+                            type: Type.OBJECT,
+                            properties: {
+                                german: { type: Type.STRING },
+                                english: { type: Type.STRING },
+                                gender: { type: Type.STRING },
+                                type: { type: Type.STRING },
+                                exampleGerman: { type: Type.STRING },
+                                exampleEnglish: { type: Type.STRING }
+                            },
+                            required: ['german', 'english', 'type', 'exampleGerman', 'exampleEnglish']
+                        }
+                    }
+                }
+            });
+
+            const jsonText = response.text || "[]";
+            const generatedWords = JSON.parse(jsonText);
+            
+            if (Array.isArray(generatedWords) && generatedWords.length > 0) {
+                 // Map to ensure strict typing compatibility
+                 return generatedWords.map((w: any) => ({
+                     german: w.german,
+                     english: w.english,
+                     gender: (['der', 'die', 'das'].includes(w.gender) ? w.gender : '') as any,
+                     type: w.type || 'Word',
+                     exampleGerman: w.exampleGerman,
+                     exampleEnglish: w.exampleEnglish,
+                     category: category || 'AI Generated',
+                     level: level
+                 }));
+            }
+        } catch (e) {
+            console.error("Gemini Vocab Gen Error (falling back to local):", e);
+        }
+    }
+
+    // Fallback to Local Data
     let pool = LOCAL_VOCAB.filter(w => {
         // Strict level filtering for Beginner
         if (level === DifficultyLevel.Beginner) return w.level === DifficultyLevel.Beginner; 
