@@ -1,6 +1,12 @@
 
 import { BookUnit } from "../types";
 import { UNIT1_EXERCISES } from "./unit1";
+import { UNIT2_EXERCISES } from "./unit2";
+import { UNIT3_EXERCISES } from "./unit3";
+import { UNIT4_EXERCISES } from "./unit4";
+import { UNIT5_EXERCISES } from "./unit5";
+import { UNIT6_EXERCISES } from "./unit6";
+import { UNIT_REVIEW_1_6 } from "./unitReview1to6";
 
 export const BOOK_UNITS: BookUnit[] = [
   // ==========================================
@@ -20,56 +26,7 @@ export const BOOK_UNITS: BookUnit[] = [
     id: "unit-2",
     title: "Unit 2: Sprache im Kurs",
     description: "Classroom objects, articles (der/die/das), and questions.",
-    exercises: [
-      {
-        id: "u2-ex1",
-        type: "multiple-choice",
-        prompt: "What is the gender of 'Buch'?",
-        options: ["Der", "Die", "Das"],
-        correctAnswer: "Das",
-        explanation: "It is 'Das Buch' (neuter)."
-      },
-      {
-        id: "u2-ex2",
-        type: "multiple-choice",
-        prompt: "What is the gender of 'Tisch'?",
-        options: ["Der", "Die", "Das"],
-        correctAnswer: "Der",
-        explanation: "It is 'Der Tisch' (masculine)."
-      },
-      {
-        id: "u2-ex3",
-        type: "fill-gap",
-        prompt: "Negate the noun with 'kein': 'Das ist ______ Handy.' (Das Handy)",
-        content: "Das ist ______ Handy.",
-        correctAnswer: "kein",
-        explanation: "Neuter (das) negation is 'kein'. (Masculine would be 'keinen' in Akkusativ, but here it is Nominativ)."
-      },
-      {
-        id: "u2-ex4",
-        type: "arrange",
-        prompt: "Ask someone to repeat.",
-        content: "Sie / das / wiederholen / Können / bitte / ?",
-        correctAnswer: "Können Sie das bitte wiederholen?",
-        explanation: "Ja/Nein Question starts with the verb (Können)."
-      },
-      {
-        id: "u2-ex5",
-        type: "fill-gap",
-        prompt: "Translation: 'How do you write that?'",
-        content: "Wie ______ man das?",
-        correctAnswer: "schreibt",
-        explanation: "'Man' (one/people) acts like er/sie/es (3rd person singular)."
-      },
-      {
-        id: "u2-ex6",
-        type: "multiple-choice",
-        prompt: "Which is correct?",
-        options: ["Ich nicht verstehe.", "Ich verstehe nicht.", "Nicht ich verstehe."],
-        correctAnswer: "Ich verstehe nicht.",
-        explanation: "'Nicht' usually comes after the verb."
-      }
-    ]
+    exercises: UNIT2_EXERCISES
   },
 
   // ==========================================
@@ -79,56 +36,7 @@ export const BOOK_UNITS: BookUnit[] = [
     id: "unit-3",
     title: "Unit 3: Städte, Länder, Sprachen",
     description: "Geography, origins, and regular verb conjugation.",
-    exercises: [
-      {
-        id: "u3-ex1",
-        type: "fill-gap",
-        prompt: "Preposition for origin: 'I come from Italy.'",
-        content: "Ich komme ______ Italien.",
-        correctAnswer: "aus",
-        explanation: "'Aus' (from) is used for cities and countries."
-      },
-      {
-        id: "u3-ex2",
-        type: "fill-gap",
-        prompt: "Preposition for location: 'We live in Berlin.'",
-        content: "Wir wohnen ______ Berlin.",
-        correctAnswer: "in",
-        explanation: "'In' is used for static location in cities/countries."
-      },
-      {
-        id: "u3-ex3",
-        type: "arrange",
-        prompt: "Form a W-Question.",
-        content: "du / woher / kommst / ?",
-        correctAnswer: "Woher kommst du?",
-        explanation: "W-Word (Woher) + Verb (kommst) + Subject (du)."
-      },
-      {
-        id: "u3-ex4",
-        type: "fill-gap",
-        prompt: "Conjugate 'sprechen' for 'er' (vowel change!).",
-        content: "Er ______ gut Deutsch.",
-        correctAnswer: "spricht",
-        explanation: "Sprechen is strong: e -> i (du sprichst, er spricht)."
-      },
-      {
-        id: "u3-ex5",
-        type: "multiple-choice",
-        prompt: "Which country has an article?",
-        options: ["Frankreich", "Spanien", "Schweiz", "Polen"],
-        correctAnswer: "Schweiz",
-        explanation: "Most are neutral, but it is 'Die Schweiz' (feminine)."
-      },
-      {
-        id: "u3-ex6",
-        type: "arrange",
-        prompt: "State your location.",
-        content: "liegt / im / München / Süden / .",
-        correctAnswer: "München liegt im Süden.",
-        explanation: "München (Subject) + liegt (Verb) + im Süden (Location)."
-      }
-    ]
+    exercises: UNIT3_EXERCISES
   },
 
   // ==========================================
@@ -138,56 +46,7 @@ export const BOOK_UNITS: BookUnit[] = [
     id: "unit-4",
     title: "Unit 4: Menschen & Häuser",
     description: "Describing homes, furniture, and the Akkusativ case.",
-    exercises: [
-      {
-        id: "u4-ex1",
-        type: "fill-gap",
-        prompt: "Akkusativ (Masc): 'I have a table.' (Der Tisch)",
-        content: "Ich habe ______ Tisch.",
-        correctAnswer: "einen",
-        explanation: "'Haben' requires Akkusativ. 'Ein' (masc) becomes 'einen'."
-      },
-      {
-        id: "u4-ex2",
-        type: "fill-gap",
-        prompt: "Akkusativ (Fem): 'I have a lamp.' (Die Lampe)",
-        content: "Ich habe ______ Lampe.",
-        correctAnswer: "eine",
-        explanation: "Feminine 'eine' stays 'eine' in Akkusativ."
-      },
-      {
-        id: "u4-ex3",
-        type: "multiple-choice",
-        prompt: "Opposite of 'hell' (bright)?",
-        options: ["klein", "dunkel", "teuer", "neu"],
-        correctAnswer: "dunkel",
-        explanation: "Hell = Bright, Dunkel = Dark."
-      },
-      {
-        id: "u4-ex4",
-        type: "arrange",
-        prompt: "Describe the balcony.",
-        content: "Balkon / Der / ist / klein / sehr / .",
-        correctAnswer: "Der Balkon ist sehr klein.",
-        explanation: "Subject (Der Balkon) + Verb (ist) + Adverb (sehr) + Adjective (klein)."
-      },
-      {
-        id: "u4-ex5",
-        type: "fill-gap",
-        prompt: "Negation (Adjective): 'The room is NOT big.'",
-        content: "Das Zimmer ist ______ groß.",
-        correctAnswer: "nicht",
-        explanation: "Use 'nicht' for adjectives. Use 'kein' for nouns."
-      },
-      {
-        id: "u4-ex6",
-        type: "multiple-choice",
-        prompt: "What is 'Das Wohnzimmer'?",
-        options: ["Kitchen", "Bedroom", "Living room", "Bathroom"],
-        correctAnswer: "Living room",
-        explanation: "Wohnen (to live) + Zimmer (room)."
-      }
-    ]
+    exercises: UNIT4_EXERCISES
   },
 
   // ==========================================
@@ -197,56 +56,7 @@ export const BOOK_UNITS: BookUnit[] = [
     id: "unit-5",
     title: "Unit 5: Termine",
     description: "Time, days, appointments, and separable verbs.",
-    exercises: [
-      {
-        id: "u5-ex1",
-        type: "fill-gap",
-        prompt: "Preposition for clock time: '___ 3 o'clock'.",
-        content: "Der Termin ist ______ drei Uhr.",
-        correctAnswer: "um",
-        explanation: "Always 'um' for specific times (um 3 Uhr, um halb 4)."
-      },
-      {
-        id: "u5-ex2",
-        type: "fill-gap",
-        prompt: "Preposition for days: '___ Monday'.",
-        content: "______ Montag habe ich frei.",
-        correctAnswer: "Am",
-        explanation: "Always 'am' (an dem) for days (am Montag, am Freitag)."
-      },
-      {
-        id: "u5-ex3",
-        type: "multiple-choice",
-        prompt: "Translate: 'Half past four' (4:30)",
-        options: ["Halb vier", "Halb fünf", "Viertel nach vier"],
-        correctAnswer: "Halb fünf",
-        explanation: "German 'Halb' refers to the hour COMING UP. So 4:30 is 'half (way to) five'."
-      },
-      {
-        id: "u5-ex4",
-        type: "arrange",
-        prompt: "Separable Verb (anfangen): 'The film starts at 8.'",
-        content: "Film / um / fängt / acht / Der / an / .",
-        correctAnswer: "Der Film fängt um acht an.",
-        explanation: "Prefix 'an' goes to the very end of the sentence."
-      },
-      {
-        id: "u5-ex5",
-        type: "fill-gap",
-        prompt: "Conjugate 'treffen' (to meet) for 'wir'.",
-        content: "Wann ______ wir uns?",
-        correctAnswer: "treffen",
-        explanation: "Wir treffen (regular plural ending)."
-      },
-      {
-        id: "u5-ex6",
-        type: "multiple-choice",
-        prompt: "What is 'Das Wochenende'?",
-        options: ["The week", "The weekend", "The holiday"],
-        correctAnswer: "The weekend",
-        explanation: "Wochen (week) + Ende (end)."
-      }
-    ]
+    exercises: UNIT5_EXERCISES
   },
 
   // ==========================================
@@ -256,56 +66,17 @@ export const BOOK_UNITS: BookUnit[] = [
     id: "unit-6",
     title: "Unit 6: Orientierung",
     description: "Directions, Dative prepositions, and 'zu' vs 'nach'.",
-    exercises: [
-      {
-        id: "u6-ex1",
-        type: "multiple-choice",
-        prompt: "Direction: 'straight ahead'",
-        options: ["links", "rechts", "geradeaus", "zurück"],
-        correctAnswer: "geradeaus",
-        explanation: "Links (left), Rechts (right), Geradeaus (straight)."
-      },
-      {
-        id: "u6-ex2",
-        type: "fill-gap",
-        prompt: "Dative: 'I go to the station.' (Der Bahnhof)",
-        content: "Ich gehe ______ Bahnhof.",
-        correctAnswer: "zum",
-        explanation: "'Zu' is dative. Der Bahnhof -> Dem Bahnhof. Zu + dem = zum."
-      },
-      {
-        id: "u6-ex3",
-        type: "fill-gap",
-        prompt: "Dative: 'I drive to the bank.' (Die Bank)",
-        content: "Ich fahre ______ Bank.",
-        correctAnswer: "zur",
-        explanation: "Die Bank -> Der Bank (Dative). Zu + der = zur."
-      },
-      {
-        id: "u6-ex4",
-        type: "arrange",
-        prompt: "Imperative (Formal): 'Go left.'",
-        content: "links / Sie / Gehen / .",
-        correctAnswer: "Gehen Sie links.",
-        explanation: "Verb first in imperative."
-      },
-      {
-        id: "u6-ex5",
-        type: "multiple-choice",
-        prompt: "Preposition: 'We drive ___ Berlin.' (Cities)",
-        options: ["zu", "nach", "in", "bei"],
-        correctAnswer: "nach",
-        explanation: "Use 'nach' for cities and countries without articles."
-      },
-      {
-        id: "u6-ex6",
-        type: "fill-gap",
-        prompt: "Two-way prep (Location): 'The bank is NEXT TO the post.'",
-        content: "Die Bank ist ______ der Post.",
-        correctAnswer: "neben",
-        explanation: "Neben = next to."
-      }
-    ]
+    exercises: UNIT6_EXERCISES
+  },
+
+  // ==========================================
+  // REVIEW UNIT 1-6
+  // ==========================================
+  {
+    id: "review-1-6",
+    title: "🔥 Midterm Review (Units 1-6)",
+    description: "Critical review of Cases, Word Order, and Prepositions to ensure mastery.",
+    exercises: UNIT_REVIEW_1_6
   },
 
   // ==========================================

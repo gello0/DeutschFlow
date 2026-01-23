@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { BookUnit, BookExercise } from '../types';
 import { BOOK_UNITS } from '../data/bookData';
 import { speakText } from '../services/geminiService';
+import { loadData, saveData, KEYS } from '../services/storage';
 
 const BookMode: React.FC = () => {
   const [selectedUnit, setSelectedUnit] = useState<BookUnit | null>(null);
@@ -16,17 +17,19 @@ const BookMode: React.FC = () => {
   const [arrangedWords, setArrangedWords] = useState<{id: number, text: string}[]>([]);
 
   useEffect(() => {
-    const saved = localStorage.getItem('book_progress');
-    if (saved) {
-      setCompletedUnits(JSON.parse(saved));
-    }
+    // Load from cloud on mount
+    const load = async () => {
+        const data = await loadData<string[]>(KEYS.BOOK_PROGRESS, []);
+        setCompletedUnits(data);
+    };
+    load();
   }, []);
 
   const saveProgress = (unitId: string) => {
     if (!completedUnits.includes(unitId)) {
       const updated = [...completedUnits, unitId];
       setCompletedUnits(updated);
-      localStorage.setItem('book_progress', JSON.stringify(updated));
+      saveData(KEYS.BOOK_PROGRESS, updated);
     }
   };
 
@@ -71,7 +74,6 @@ const BookMode: React.FC = () => {
     } else if (currentEx.type === 'fill-gap') {
       isCorrect = userAnswer.trim().toLowerCase() === currentEx.correctAnswer.toLowerCase();
     } else if (currentEx.type === 'arrange') {
-      // Join words and fix punctuation spacing (e.g. "Hallo ." -> "Hallo.")
       const constructed = arrangedWords
         .map(w => w.text)
         .join(' ')
@@ -82,7 +84,6 @@ const BookMode: React.FC = () => {
 
     if (isCorrect) {
       setFeedback('correct');
-      // Play audio of correct answer if it's text
       if (currentEx.type !== 'multiple-choice' || currentEx.correctAnswer.length > 2) {
           speakText(currentEx.correctAnswer);
       }
@@ -99,13 +100,10 @@ const BookMode: React.FC = () => {
       setCurrentExerciseIdx(nextIdx);
       resetExerciseState(selectedUnit.exercises[nextIdx]);
     } else {
-      // Unit Complete
       saveProgress(selectedUnit.id);
-      setSelectedUnit(null); // Go back to menu
+      setSelectedUnit(null);
     }
   };
-
-  // --- RENDER HELPERS ---
 
   const renderProgressBar = () => {
      if (!selectedUnit) return null;
@@ -118,7 +116,6 @@ const BookMode: React.FC = () => {
   };
 
   if (!selectedUnit) {
-    // === CHAPTER LIST VIEW ===
     return (
       <div className="flex flex-col h-full max-w-2xl mx-auto px-4 pb-24 pt-4">
         <div className="mb-6">
@@ -164,12 +161,10 @@ const BookMode: React.FC = () => {
     );
   }
 
-  // === EXERCISE VIEW ===
   const currentEx = selectedUnit.exercises[currentExerciseIdx];
 
   return (
     <div className="flex flex-col h-full max-w-2xl mx-auto px-4 pb-24 pt-4">
-       {/* Header */}
        <div className="flex items-center justify-between mb-4">
           <button 
             onClick={() => setSelectedUnit(null)}
@@ -189,7 +184,6 @@ const BookMode: React.FC = () => {
              {currentEx.prompt}
           </h3>
 
-          {/* --- TYPE: MULTIPLE CHOICE --- */}
           {currentEx.type === 'multiple-choice' && (
              <div className="grid grid-cols-1 w-full gap-3">
                 {currentEx.options?.map(opt => (
@@ -211,7 +205,6 @@ const BookMode: React.FC = () => {
              </div>
           )}
 
-          {/* --- TYPE: FILL GAP --- */}
           {currentEx.type === 'fill-gap' && (
              <div className="w-full max-w-md">
                 <div className="text-2xl text-center mb-6 leading-loose font-serif">
@@ -242,7 +235,6 @@ const BookMode: React.FC = () => {
              </div>
           )}
 
-          {/* --- TYPE: ARRANGE --- */}
           {currentEx.type === 'arrange' && (
              <div className="w-full">
                 <div className="min-h-[60px] border-b-2 border-gray-200 dark:border-gray-700 mb-8 flex flex-wrap gap-2 justify-center items-center pb-2">
@@ -272,7 +264,6 @@ const BookMode: React.FC = () => {
           )}
        </div>
 
-       {/* --- FEEDBACK AREA --- */}
        <div className="mt-8 min-h-[140px]">
           {feedback !== 'idle' && (
              <div className={`p-4 rounded-xl mb-4 animate-in slide-in-from-bottom-2 ${

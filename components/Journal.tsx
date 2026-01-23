@@ -1,6 +1,7 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DifficultyLevel } from '../types';
+import { loadData, saveData, KEYS } from '../services/storage';
 
 interface JournalProps {
   level: DifficultyLevel;
@@ -9,22 +10,33 @@ interface JournalProps {
 interface JournalEntryData {
   id: string;
   text: string;
-  date: Date;
+  dateStr: string; // Storing date as string for easier JSON serialization
 }
 
 const Journal: React.FC<JournalProps> = ({ level }) => {
   const [entry, setEntry] = useState('');
   const [history, setHistory] = useState<JournalEntryData[]>([]);
 
-  // Load from local storage on mount (optional enhancement, but keeping simple for now)
-  // In a real app we'd load `history` from localStorage here.
+  useEffect(() => {
+      const load = async () => {
+          const data = await loadData<JournalEntryData[]>(KEYS.JOURNAL_ENTRIES, []);
+          setHistory(data);
+      };
+      load();
+  }, []);
+
+  useEffect(() => {
+      if (history.length > 0) {
+          saveData(KEYS.JOURNAL_ENTRIES, history);
+      }
+  }, [history]);
 
   const handleSaveEntry = () => {
     if (!entry.trim()) return;
     const newEntry: JournalEntryData = {
         id: Date.now().toString(),
         text: entry,
-        date: new Date()
+        dateStr: new Date().toISOString()
     };
     setHistory([newEntry, ...history]);
     setEntry('');
@@ -32,7 +44,6 @@ const Journal: React.FC<JournalProps> = ({ level }) => {
 
   return (
     <div className="flex flex-col h-full max-w-3xl mx-auto px-4">
-      {/* Header Section */}
       <div className="flex items-end justify-between mb-6 pt-2">
         <div>
            <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Dein Tagebuch</h2>
@@ -45,7 +56,6 @@ const Journal: React.FC<JournalProps> = ({ level }) => {
         </div>
       </div>
 
-      {/* Main Editor Card */}
       <div className="bg-white dark:bg-[#1e1e1e] rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-800 overflow-hidden flex flex-col min-h-[300px] transition-all relative z-10">
         <textarea
           value={entry}
@@ -55,7 +65,6 @@ const Journal: React.FC<JournalProps> = ({ level }) => {
           spellCheck={false}
         />
         
-        {/* Toolbar Area */}
         <div className="bg-gray-50/80 dark:bg-[#252525] backdrop-blur-sm border-t border-gray-100 dark:border-gray-800 p-4 flex items-center justify-end">
            <button 
                 onClick={handleSaveEntry}
@@ -74,7 +83,6 @@ const Journal: React.FC<JournalProps> = ({ level }) => {
         </div>
       </div>
 
-      {/* History List */}
       <div className="mt-12 pb-24">
          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -92,7 +100,7 @@ const Journal: React.FC<JournalProps> = ({ level }) => {
              {history.map((item) => (
                 <div key={item.id} className="bg-white dark:bg-[#1e1e1e] p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow">
                    <div className="text-xs font-semibold text-german-gold uppercase tracking-wider mb-3">
-                      {item.date.toLocaleDateString('de-DE')} • {item.date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      {new Date(item.dateStr).toLocaleDateString('de-DE')} • {new Date(item.dateStr).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                    </div>
                    <p className="text-gray-800 dark:text-gray-200 leading-relaxed font-serif text-lg">{item.text}</p>
                 </div>

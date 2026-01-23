@@ -749,6 +749,105 @@ Griechenland|Greece|n|Noun|Countries|1
 Niederlande|Netherlands|p|Noun|Countries|1
 Schweden|Sweden|n|Noun|Countries|1
 Dänemark|Denmark|n|Noun|Countries|1
+
+# PROFESSIONS (BERUFE)
+Arzt|doctor (m)|m|Noun|Professions|1
+Ärztin|doctor (f)|f|Noun|Professions|1
+Lehrer|teacher (m)|m|Noun|Professions|1
+Lehrerin|teacher (f)|f|Noun|Professions|1
+Student|student (m)|m|Noun|Professions|1
+Studentin|student (f)|f|Noun|Professions|1
+Kellner|waiter|m|Noun|Professions|1
+Kellnerin|waitress|f|Noun|Professions|1
+Koch|cook (m)|m|Noun|Professions|1
+Köchin|cook (f)|f|Noun|Professions|1
+Ingenieur|engineer|m|Noun|Professions|1
+Verkäufer|salesperson|m|Noun|Professions|1
+Friseur|hairdresser|m|Noun|Professions|1
+Polizist|police officer|m|Noun|Professions|1
+Fahrer|driver|m|Noun|Professions|1
+Sekretär|secretary|m|Noun|Professions|1
+Chef|boss|m|Noun|Professions|1
+Kollege|colleague|m|Noun|Professions|1
+Firma|company|f|Noun|Professions|1
+Büro|office|n|Noun|Professions|1
+Arbeit|work|f|Noun|Professions|1
+Job|job|m|Noun|Professions|1
+arbeiten|to work|-|Verb|Professions|1
+studieren|to study|-|Verb|Professions|1
+verdienen|to earn|-|Verb|Professions|1
+
+# OFFICE (BÜRO)
+Schreibtisch|desk|m|Noun|Office|1
+Stuhl|chair|m|Noun|Office|1
+Computer|computer|m|Noun|Office|1
+Drucker|printer|m|Noun|Office|1
+Telefon|phone|n|Noun|Office|1
+Termin|appointment|m|Noun|Office|1
+Meeting|meeting|n|Noun|Office|1
+Pause|break|f|Noun|Office|1
+Kaffee|coffee|m|Noun|Office|1
+E-Mail|email|f|Noun|Office|1
+Brief|letter|m|Noun|Office|1
+Notiz|note|f|Noun|Office|1
+Stift|pen|m|Noun|Office|1
+Papier|paper|n|Noun|Office|1
+Chef|boss|m|Noun|Office|1
+Kollege|colleague|m|Noun|Office|1
+Mitarbeiter|employee|m|Noun|Office|1
+Kunde|customer|m|Noun|Office|1
+schreiben|to write|-|Verb|Office|1
+anrufen|to call|-|Verb|Office|1
+senden|to send|-|Verb|Office|1
+drucken|to print|-|Verb|Office|1
+kopieren|to copy|-|Verb|Office|1
+
+# SHOPPING (EINKAUFEN)
+Supermarkt|supermarket|m|Noun|Shopping|1
+Markt|market|m|Noun|Shopping|1
+Laden|shop|m|Noun|Shopping|1
+Kasse|checkout|f|Noun|Shopping|1
+Einkaufswagen|shopping cart|m|Noun|Shopping|1
+Tasche|bag|f|Noun|Shopping|1
+Tüte|bag (plastic/paper)|f|Noun|Shopping|1
+Preis|price|m|Noun|Shopping|1
+Geld|money|n|Noun|Shopping|1
+Kreditkarte|credit card|f|Noun|Shopping|1
+Quittung|receipt|f|Noun|Shopping|1
+Angebot|offer|n|Noun|Shopping|1
+Rabatt|discount|m|Noun|Shopping|1
+teuer|expensive|-|Adjective|Shopping|1
+billig|cheap|-|Adjective|Shopping|1
+günstig|favorable/cheap|-|Adjective|Shopping|1
+kosten|to cost|-|Verb|Shopping|1
+kaufen|to buy|-|Verb|Shopping|1
+bezahlen|to pay|-|Verb|Shopping|1
+suchen|to search|-|Verb|Shopping|1
+finden|to find|-|Verb|Shopping|1
+brauchen|to need|-|Verb|Shopping|1
+
+# EMERGENCY (NOTFALL)
+Hilfe|help|f|Noun|Emergency|1
+Polizei|police|f|Noun|Emergency|1
+Feuerwehr|fire department|f|Noun|Emergency|1
+Krankenwagen|ambulance|m|Noun|Emergency|1
+Notarzt|emergency doctor|m|Noun|Emergency|1
+Unfall|accident|m|Noun|Emergency|1
+Feuer|fire|n|Noun|Emergency|1
+Dieb|thief|m|Noun|Emergency|1
+Schlüssel|key|m|Noun|Emergency|1
+Geldbeutel|wallet|m|Noun|Emergency|1
+Ausweis|ID card|m|Noun|Emergency|1
+Pass|passport|m|Noun|Emergency|1
+verlieren|to lose|-|Verb|Emergency|1
+stehlen|to steal|-|Verb|Emergency|1
+helfen|to help|-|Verb|Emergency|1
+suchen|to search|-|Verb|Emergency|1
+finden|to find|-|Verb|Emergency|1
+rufen|to call|-|Verb|Emergency|1
+verletzt|injured|-|Adjective|Emergency|1
+gestohlen|stolen|-|Adjective|Emergency|1
+weg|gone/away|-|Adjective|Emergency|1
 `;
 
 export const LOCAL_VOCAB: LocalVocabEntry[] = RAW_CSV_DATA

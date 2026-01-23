@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { DifficultyLevel, SentencePuzzle, SentenceProgress } from '../types';
 import { generateSentencePuzzle, speakText } from '../services/geminiService';
+import { loadData, saveData, KEYS } from '../services/storage';
 
 interface SentenceBuilderProps {
   level: DifficultyLevel;
@@ -17,18 +18,17 @@ const SentenceBuilder: React.FC<SentenceBuilderProps> = ({ level }) => {
   // SRS State
   const [progressData, setProgressData] = useState<Record<string, SentenceProgress>>({});
 
-  // Load progress from local storage on mount
   useEffect(() => {
-      const saved = localStorage.getItem('sentence_progress');
-      if (saved) {
-          setProgressData(JSON.parse(saved));
-      }
+      const load = async () => {
+          const data = await loadData<Record<string, SentenceProgress>>(KEYS.SENTENCE_PROGRESS, {});
+          setProgressData(data);
+      };
+      load();
   }, []);
 
-  // Save progress whenever it changes
   useEffect(() => {
       if (Object.keys(progressData).length > 0) {
-          localStorage.setItem('sentence_progress', JSON.stringify(progressData));
+          saveData(KEYS.SENTENCE_PROGRESS, progressData);
       }
   }, [progressData]);
 
@@ -37,19 +37,8 @@ const SentenceBuilder: React.FC<SentenceBuilderProps> = ({ level }) => {
     setStatus('playing');
     setSelectedWords([]);
     
-    // SRS Logic: Pick a sentence
-    // 1. Prioritize 'learning' status (got wrong previously)
-    // 2. Then 'new' (never seen)
-    // 3. Then 'mastered' (review occasionally)
-    
-    // We pass excludes to the generator to try and get something fresh if possible, 
-    // but the generator logic actually needs to know what we WANT to see if we are reviewing.
-    // For this simple version, we will let the generator give us something, and if it's new, great.
-    // If we want to review, we need a way to force a specific sentence.
-    // Since our generator currently randomizes, we will pass a list of "mastered" items to EXCLUDE
-    // so we see new or difficult ones more often.
-    
-    const masteredIds = Object.values(progressData)
+    // Cast to SentenceProgress[] to handle Object.values type inference issues
+    const masteredIds = (Object.values(progressData) as SentenceProgress[])
         .filter(p => p.status === 'mastered')
         .map(p => p.id);
 
@@ -57,7 +46,6 @@ const SentenceBuilder: React.FC<SentenceBuilderProps> = ({ level }) => {
     
     if (newPuzzle) {
         setPuzzle(newPuzzle);
-        // Clean punctuation
         const cleanSentence = newPuzzle.german.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
         const words = cleanSentence.split(/\s+/);
         const wordObjects = words.map((w, i) => ({ id: `${w}-${i}`, text: w }));
@@ -100,8 +88,6 @@ const SentenceBuilder: React.FC<SentenceBuilderProps> = ({ level }) => {
               attempts: current.attempts + 1,
               lastSeen: Date.now(),
               successCount: isCorrect ? current.successCount + 1 : current.successCount,
-              // If wrong, downgrade to 'learning'. If correct and was 'new'/'learning', maybe 'mastered' after a few tries?
-              // Simple logic: 1 wrong -> learning. 3 correct in a row -> mastered.
               status: !isCorrect ? 'learning' : (current.successCount + 1 >= 3 ? 'mastered' : 'learning')
           };
 
@@ -117,7 +103,7 @@ const SentenceBuilder: React.FC<SentenceBuilderProps> = ({ level }) => {
     
     if (constructed === targetClean) {
         setStatus('correct');
-        speakText(puzzle.german); // Use the new TTS function
+        speakText(puzzle.german);
         updateProgress(true);
     } else {
         setStatus('wrong');
@@ -136,7 +122,6 @@ const SentenceBuilder: React.FC<SentenceBuilderProps> = ({ level }) => {
 
   if (!puzzle) return <div>Error loading.</div>;
 
-  // Get current status for UI feedback
   const itemProgress = progressData[puzzle.german];
 
   return (
@@ -145,7 +130,6 @@ const SentenceBuilder: React.FC<SentenceBuilderProps> = ({ level }) => {
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Satzbau</h2>
         <p className="text-gray-500 dark:text-gray-400">Build the sentence</p>
         
-        {/* SRS Indicator */}
         {itemProgress && (
             <div className={`absolute top-0 right-0 text-[10px] px-2 py-1 rounded border ${
                 itemProgress.status === 'learning' ? 'bg-orange-50 border-orange-200 text-orange-600' :
@@ -163,7 +147,6 @@ const SentenceBuilder: React.FC<SentenceBuilderProps> = ({ level }) => {
             "{puzzle.english}"
           </h3>
 
-          {/* Construction Area */}
           <div className="w-full min-h-[80px] bg-gray-50 dark:bg-[#252525] rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 p-4 mb-8 flex flex-wrap gap-2 justify-center items-center">
              {selectedWords.length === 0 && (
                 <span className="text-gray-400 text-sm">Tap words below to build sentence</span>
@@ -179,7 +162,6 @@ const SentenceBuilder: React.FC<SentenceBuilderProps> = ({ level }) => {
              ))}
           </div>
 
-          {/* Word Pool */}
           <div className="flex flex-wrap gap-3 justify-center mb-8">
              {availableWords.map(w => (
                 <button
@@ -192,7 +174,6 @@ const SentenceBuilder: React.FC<SentenceBuilderProps> = ({ level }) => {
              ))}
           </div>
 
-          {/* Status Message */}
           {status === 'correct' && (
               <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 rounded-xl flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

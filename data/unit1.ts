@@ -220,5 +220,31 @@ export const UNIT1_EXERCISES: BookExercise[] = [
     options: ["bezahlen", "bezahle", "bezahlt", "bezahlst"],
     correctAnswer: "bezahlen",
     explanation: "Wir (we) always takes the infinitive -en."
+  },
+
+  // === PART 7: MASTERY (WELL-BEING & SPELLING) ===
+  {
+    id: "u1-mastery-1",
+    type: "arrange",
+    prompt: "Formal: 'How are you?'",
+    content: "es / Ihnen / Wie / geht / ?",
+    correctAnswer: "Wie geht es Ihnen?",
+    explanation: "Standard formal inquiry of well-being. 'Ihnen' is Dative formal 'You'."
+  },
+  {
+    id: "u1-mastery-2",
+    type: "fill-gap",
+    prompt: "Answer: 'I am doing well.'",
+    content: "Mir ______ es gut.",
+    correctAnswer: "geht",
+    explanation: "Es geht mir gut (It goes well for me)."
+  },
+  {
+    id: "u1-mastery-3",
+    type: "multiple-choice",
+    prompt: "Teacher says: 'Buchstabieren Sie bitte.' What do you do?",
+    options: ["Say your name", "Spell your name", "Write your name"],
+    correctAnswer: "Spell your name",
+    explanation: "Buchstabieren = to spell (A-B-C...)."
   }
 ];
