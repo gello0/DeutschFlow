@@ -227,7 +227,7 @@ const BookMode: React.FC = () => {
                       type="text" 
                       value={userAnswer}
                       onChange={(e) => setUserAnswer(e.target.value)}
-                      className="w-full p-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#252525] text-center text-lg focus:ring-2 focus:ring-german-gold outline-none"
+                      className="w-full p-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#252525] text-center text-base focus:ring-2 focus:ring-german-gold outline-none"
                       placeholder="Type the missing word"
                       autoFocus
                    />

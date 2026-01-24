@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { ChatMessage, DifficultyLevel, Scenario } from '../types';
 import { sendMessageToTutor, speakText } from '../services/geminiService';
@@ -131,13 +132,13 @@ const ChatTutor: React.FC<ChatTutorProps> = ({ level }) => {
 
   if (mode === 'menu') {
       return (
-          <div className="flex flex-col h-[calc(100vh-200px)] bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
-            <div className="bg-german-black text-white p-4 text-center z-10 border-b border-gray-800">
+          <div className="flex flex-col h-full bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 overflow-hidden mx-2 md:mx-auto max-w-2xl">
+            <div className="bg-german-black text-white p-4 text-center z-10 border-b border-gray-800 flex-none">
                 <h2 className="font-semibold text-lg">AI Roleplay Tutor</h2>
                 <p className="text-xs text-gray-400">Choose a situation to practice</p>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-6 bg-gray-50 dark:bg-[#121212]">
+            <div className="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-[#121212]">
                 <div className="grid gap-4">
                     <button
                     onClick={() => startChat(null)}
@@ -172,9 +173,9 @@ const ChatTutor: React.FC<ChatTutorProps> = ({ level }) => {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-200px)] bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
+    <div className="flex flex-col h-full bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 overflow-hidden mx-2 md:mx-auto max-w-2xl">
       {/* Header */}
-      <div className="bg-german-black text-white p-4 flex justify-between items-center z-10 shadow-md">
+      <div className="bg-german-black text-white p-4 flex justify-between items-center z-10 shadow-md flex-none">
         <div className="flex items-center gap-3">
            <button 
              onClick={() => setMode('menu')} 
@@ -203,7 +204,7 @@ const ChatTutor: React.FC<ChatTutorProps> = ({ level }) => {
         {messages.map((msg) => (
             <div key={msg.id} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} animate-in slide-in-from-bottom-2 fade-in duration-300`}>
             <div 
-                className={`max-w-[85%] p-4 rounded-2xl shadow-sm text-sm md:text-base relative group
+                className={`max-w-[85%] p-3 md:p-4 rounded-2xl shadow-sm text-sm md:text-base relative group
                 ${msg.role === 'user' 
                     ? 'bg-german-gold text-black rounded-tr-none' 
                     : 'bg-white dark:bg-[#2d2d2d] text-gray-800 dark:text-gray-200 border border-gray-100 dark:border-gray-700 rounded-tl-none'}`}
@@ -245,7 +246,7 @@ const ChatTutor: React.FC<ChatTutorProps> = ({ level }) => {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="p-4 bg-white dark:bg-[#1e1e1e] border-t border-gray-100 dark:border-gray-800">
+      <div className="p-3 md:p-4 bg-white dark:bg-[#1e1e1e] border-t border-gray-100 dark:border-gray-800 flex-none">
         <div className="flex gap-2">
             <input
             type="text"
@@ -253,7 +254,7 @@ const ChatTutor: React.FC<ChatTutorProps> = ({ level }) => {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
             placeholder={selectedScenario ? "Antworte..." : "Schreib etwas..."}
-            className="flex-1 p-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-german-gold/50 bg-gray-50 dark:bg-[#2d2d2d] text-gray-900 dark:text-white placeholder:text-gray-400"
+            className="flex-1 p-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-german-gold/50 bg-gray-50 dark:bg-[#2d2d2d] text-gray-900 dark:text-white placeholder:text-gray-400 text-base"
             disabled={loading}
             autoFocus
             />

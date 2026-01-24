@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { AppView, DifficultyLevel, VocabWord, WordProgress } from './types';
 import { generateVocabulary } from './services/geminiService';
@@ -209,7 +210,7 @@ const App: React.FC = () => {
 
   if (isInitializing) {
       return (
-          <div className="min-h-screen bg-[#121212] flex flex-col items-center justify-center text-white">
+          <div className="h-dvh bg-[#121212] flex flex-col items-center justify-center text-white">
               <div className="w-16 h-16 border-4 border-german-gold border-t-transparent rounded-full animate-spin mb-6"></div>
               <h2 className="text-xl font-bold">Lade DeutschFlow...</h2>
           </div>
@@ -222,7 +223,7 @@ const App: React.FC = () => {
         const masteredCount = Object.values(vocabProgress).filter((p: WordProgress) => p.isMastered).length;
         
         return (
-          <div className="flex flex-col items-center justify-center min-h-full max-w-2xl mx-auto px-6 pb-20 pt-8">
+          <div className="flex flex-col items-center justify-center min-h-full max-w-2xl mx-auto px-6 py-8">
              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 text-center">Learning Hub</h1>
              <p className="text-gray-500 dark:text-gray-400 mb-8 text-center">Your {level.split(' ')[0]} Path</p>
              
@@ -421,15 +422,15 @@ const App: React.FC = () => {
       );
     }
 
-    if (currentView === AppView.Book) return <div className="h-full pt-4 pb-24"><BookMode /></div>;
-    if (currentView === AppView.Journal) return <div className="h-full pt-4 pb-24"><Journal level={level} /></div>;
-    if (currentView === AppView.Chat) return <div className="h-full pt-4 pb-24"><ChatTutor level={level} /></div>;
-    if (currentView === AppView.Drills) return <div className="h-full pt-4 pb-24"><ConjugationDrill level={level} /></div>;
-    if (currentView === AppView.Numbers) return <div className="h-full pt-4 pb-24"><NumberGame level={level} /></div>;
-    if (currentView === AppView.SentenceBuilder) return <div className="h-full pt-4 pb-24"><SentenceBuilder level={level} /></div>;
+    if (currentView === AppView.Book) return <div className="h-full pt-4"><BookMode /></div>;
+    if (currentView === AppView.Journal) return <div className="h-full pt-4"><Journal level={level} /></div>;
+    if (currentView === AppView.Chat) return <div className="h-full pt-4"><ChatTutor level={level} /></div>;
+    if (currentView === AppView.Drills) return <div className="h-full pt-4"><ConjugationDrill level={level} /></div>;
+    if (currentView === AppView.Numbers) return <div className="h-full pt-4"><NumberGame level={level} /></div>;
+    if (currentView === AppView.SentenceBuilder) return <div className="h-full pt-4"><SentenceBuilder level={level} /></div>;
 
     return (
-       <div className="max-w-md mx-auto px-4 py-8 pb-24">
+       <div className="max-w-md mx-auto px-4 py-8">
          <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Settings</h1>
          <div className="bg-white dark:bg-[#1e1e1e] rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-800">
            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Current Level</label>
@@ -480,8 +481,8 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#121212] font-sans transition-colors duration-200">
-      <header className="bg-white dark:bg-[#1e1e1e] shadow-sm border-b dark:border-[#333] sticky top-0 z-50">
+    <div className="h-dvh bg-gray-50 dark:bg-[#121212] font-sans transition-colors duration-200 flex flex-col overflow-hidden">
+      <header className="bg-white dark:bg-[#1e1e1e] shadow-sm border-b dark:border-[#333] z-50 flex-none">
         <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded bg-gradient-to-br from-black via-red-600 to-german-gold flex items-center justify-center text-white font-bold text-xs shadow-md">DE</div>
@@ -502,9 +503,12 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      <main className="pt-6 h-[calc(100vh-64px)] overflow-y-auto no-scrollbar">{renderContent()}</main>
+      {/* Main Content Area - Scrollable with bottom padding to clear nav */}
+      <main className="flex-1 overflow-y-auto overflow-x-hidden relative scroll-smooth pb-[100px]">
+        {renderContent()}
+      </main>
 
-      <nav className="fixed bottom-0 left-0 w-full bg-white dark:bg-[#1e1e1e] border-t border-gray-200 dark:border-[#333] py-3 z-50 safe-area-pb">
+      <nav className="fixed bottom-0 left-0 w-full bg-white dark:bg-[#1e1e1e] border-t border-gray-200 dark:border-[#333] py-3 z-50 safe-area-pb flex-none">
         <div className="max-w-md mx-auto flex justify-around items-center px-4">
           <button 
             onClick={() => { setCurrentView(AppView.Vocab); setLearnMode('menu'); }}

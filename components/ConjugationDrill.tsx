@@ -210,7 +210,7 @@ const ConjugationDrill: React.FC<ConjugationDrillProps> = ({ level }) => {
                 onChange={(e) => handleInputChange(item.key, e.target.value)}
                 disabled={checked}
                 autoComplete="off"
-                className={`w-full text-lg p-3 rounded-xl border-2 outline-none transition-all bg-gray-50 dark:bg-[#2d2d2d] text-gray-900 dark:text-white ${getStatusColor(item.key as keyof typeof drill.conjugations)}`}
+                className={`w-full text-base p-3 rounded-xl border-2 outline-none transition-all bg-gray-50 dark:bg-[#2d2d2d] text-gray-900 dark:text-white ${getStatusColor(item.key as keyof typeof drill.conjugations)}`}
               />
               {checked && answers[item.key].trim().toLowerCase() !== drill.conjugations[item.key as keyof typeof drill.conjugations].toLowerCase() && (
                  <div className="absolute right-0 top-0 mt-8 mr-3 flex items-center">

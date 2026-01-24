@@ -61,7 +61,7 @@ const Journal: React.FC<JournalProps> = ({ level }) => {
           value={entry}
           onChange={(e) => setEntry(e.target.value)}
           placeholder="Worüber denkst du nach? (Schreib einfach drauf los...)"
-          className="flex-1 w-full p-8 text-xl text-gray-900 dark:text-gray-100 placeholder:text-gray-400 bg-transparent resize-none focus:outline-none leading-9 font-medium"
+          className="flex-1 w-full p-8 text-base md:text-xl text-gray-900 dark:text-gray-100 placeholder:text-gray-400 bg-transparent resize-none focus:outline-none leading-9 font-medium"
           spellCheck={false}
         />
         
