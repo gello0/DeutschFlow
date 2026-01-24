@@ -1,7 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
-import { DifficultyLevel, VerbDrill } from '../types';
-import { generateVerbDrill, speakText } from '../services/geminiService';
+import { DifficultyLevel, VerbDrill, WordProgress } from '../types';
+import { speakText } from '../services/geminiService';
+import { LOCAL_VERBS } from '../data/vocab';
+import { loadData, saveData, KEYS } from '../services/storage';
 
 interface ConjugationDrillProps {
   level: DifficultyLevel;
@@ -20,20 +22,64 @@ const ConjugationDrill: React.FC<ConjugationDrillProps> = ({ level }) => {
   });
   const [checked, setChecked] = useState(false);
   const [score, setScore] = useState<{ correct: number; total: number } | null>(null);
+  
+  // Progress State
+  const [verbProgress, setVerbProgress] = useState<Record<string, WordProgress>>({});
+  const [isReviewMode, setIsReviewMode] = useState(false);
+
+  // Load Progress
+  useEffect(() => {
+    const load = async () => {
+        const data = await loadData<Record<string, WordProgress>>(KEYS.VERB_PROGRESS, {});
+        setVerbProgress(data);
+    };
+    load();
+  }, []);
+
+  // Save Progress
+  useEffect(() => {
+    if (Object.keys(verbProgress).length > 0) {
+        saveData(KEYS.VERB_PROGRESS, verbProgress);
+    }
+  }, [verbProgress]);
 
   const fetchDrill = async () => {
     setLoading(true);
     setChecked(false);
     setAnswers({ ich: '', du: '', er_sie_es: '', wir: '', ihr: '', sie_Sie: '' });
     setScore(null);
-    const newDrill = await generateVerbDrill(level);
-    setDrill(newDrill);
+    setIsReviewMode(false);
+
+    // Artificial delay for UX
+    await new Promise(resolve => setTimeout(resolve, 200));
+
+    // Filter Logic
+    const unmasteredVerbs = LOCAL_VERBS.filter(v => {
+        const p = verbProgress[v.infinitive];
+        return !p || !p.isMastered;
+    });
+
+    let selectedVerb: VerbDrill;
+
+    if (unmasteredVerbs.length > 0) {
+        // Pick a new/learning verb
+        const randomIndex = Math.floor(Math.random() * unmasteredVerbs.length);
+        selectedVerb = unmasteredVerbs[randomIndex];
+    } else {
+        // All verbs mastered! Review mode.
+        const randomIndex = Math.floor(Math.random() * LOCAL_VERBS.length);
+        selectedVerb = LOCAL_VERBS[randomIndex];
+        setIsReviewMode(true);
+    }
+
+    setDrill(selectedVerb);
     setLoading(false);
   };
 
   useEffect(() => {
+    // Only fetch if we have loaded progress (or empty progress is confirmed)
     fetchDrill();
-  }, [level]);
+  }, [level]); // Re-fetch if level changes (though LOCAL_VERBS is currently flat list, structure allows for future level filtering)
 
   const handleInputChange = (key: string, value: string) => {
     setAnswers(prev => ({ ...prev, [key]: value }));
@@ -52,6 +98,34 @@ const ConjugationDrill: React.FC<ConjugationDrillProps> = ({ level }) => {
 
     setScore({ correct: correctCount, total: 6 });
     setChecked(true);
+
+    // Update Progress
+    if (!isReviewMode) {
+        const isPerfect = correctCount === 6;
+        setVerbProgress(prev => {
+            const current = prev[drill.infinitive] || {
+                id: drill.infinitive,
+                successCount: 0,
+                isMastered: false,
+                lastReview: 0
+            };
+
+            // SRS Logic: 3 perfect streaks to master
+            let newSuccess = current.successCount;
+            if (isPerfect) newSuccess += 1;
+            else newSuccess = 0; // Reset streak on error
+
+            return {
+                ...prev,
+                [drill.infinitive]: {
+                    ...current,
+                    successCount: newSuccess,
+                    isMastered: newSuccess >= 3,
+                    lastReview: Date.now()
+                }
+            };
+        });
+    }
   };
 
   const getStatusColor = (key: keyof typeof drill.conjugations) => {
@@ -73,9 +147,27 @@ const ConjugationDrill: React.FC<ConjugationDrillProps> = ({ level }) => {
 
   if (!drill) return <div className="text-center p-8 text-gray-500">Failed to load drill. <button onClick={fetchDrill} className="underline text-german-gold">Retry</button></div>;
 
+  const progress = verbProgress[drill.infinitive];
+
   return (
     <div className="flex flex-col h-full max-w-2xl mx-auto px-4 pb-20">
-      <div className="text-center mb-8 mt-4">
+      
+      {/* Progress Header */}
+      <div className="flex justify-between items-center mt-6 mb-4">
+         <div className="flex items-center gap-2">
+             <span className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">Verb Drill</span>
+             {isReviewMode && <span className="text-xs bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 px-2 py-0.5 rounded-full font-bold">Review Mode</span>}
+         </div>
+         {progress && !isReviewMode && (
+             <div className="flex gap-1">
+                 {[1, 2, 3].map(i => (
+                     <div key={i} className={`w-2 h-2 rounded-full ${progress.successCount >= i ? 'bg-green-500' : 'bg-gray-200 dark:bg-gray-700'}`} />
+                 ))}
+             </div>
+         )}
+      </div>
+
+      <div className="text-center mb-8">
         <span className="inline-block px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded-full text-xs font-semibold text-gray-600 dark:text-gray-300 mb-2 uppercase tracking-wide">
           {drill.tense}
         </span>

@@ -16,6 +16,13 @@ export interface VocabWord {
   level?: DifficultyLevel;
 }
 
+export interface WordProgress {
+  id: string; // german word as id
+  successCount: number; // consecutive correct answers
+  isMastered: boolean; // true if successCount >= 3
+  lastReview: number; // timestamp
+}
+
 export interface VerbDrill {
   infinitive: string;
   translation: string;

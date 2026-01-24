@@ -5,6 +5,8 @@ export const KEYS = {
   VOCAB_INDEX: 'vocab_index',
   VOCAB_LEVEL: 'vocab_level',
   VOCAB_FAVORITES: 'vocab_favorites',
+  VOCAB_PROGRESS: 'vocab_progress', // Vocabulary SRS
+  VERB_PROGRESS: 'verb_progress',   // Verb Drill SRS
   BOOK_PROGRESS: 'book_progress',
   SENTENCE_PROGRESS: 'sentence_progress',
   JOURNAL_ENTRIES: 'journal_entries'

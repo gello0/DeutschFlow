@@ -84,7 +84,7 @@ export const LOCAL_VERBS: VerbDrill[] = [
     conjugations: { ich: "schlafe", du: "schläfst", er_sie_es: "schläft", wir: "schlafen", ihr: "schlaft", sie_Sie: "schlafen" },
     tip: "Vowel change a -> ä"
   },
-    {
+  {
     infinitive: "sprechen",
     translation: "to speak",
     tense: "Präsens",
@@ -104,6 +104,41 @@ export const LOCAL_VERBS: VerbDrill[] = [
     tense: "Präsens",
     conjugations: { ich: "fahre", du: "fährst", er_sie_es: "fährt", wir: "fahren", ihr: "fahrt", sie_Sie: "fahren" },
     tip: "Vowel change a -> ä"
+  },
+  {
+    infinitive: "sehen",
+    translation: "to see",
+    tense: "Präsens",
+    conjugations: { ich: "sehe", du: "siehst", er_sie_es: "sieht", wir: "sehen", ihr: "seht", sie_Sie: "sehen" },
+    tip: "Vowel change e -> ie"
+  },
+  {
+    infinitive: "helfen",
+    translation: "to help",
+    tense: "Präsens",
+    conjugations: { ich: "helfe", du: "hilfst", er_sie_es: "hilft", wir: "helfen", ihr: "helft", sie_Sie: "helfen" },
+    tip: "Vowel change e -> i"
+  },
+  {
+    infinitive: "tragen",
+    translation: "to wear/carry",
+    tense: "Präsens",
+    conjugations: { ich: "trage", du: "trägst", er_sie_es: "trägt", wir: "tragen", ihr: "tragt", sie_Sie: "tragen" },
+    tip: "Vowel change a -> ä"
+  },
+  {
+    infinitive: "geben",
+    translation: "to give",
+    tense: "Präsens",
+    conjugations: { ich: "gebe", du: "gibst", er_sie_es: "gibt", wir: "geben", ihr: "gebt", sie_Sie: "geben" },
+    tip: "Vowel change e -> i"
+  },
+  {
+    infinitive: "nehmen",
+    translation: "to take",
+    tense: "Präsens",
+    conjugations: { ich: "nehme", du: "nimmst", er_sie_es: "nimmt", wir: "nehmen", ihr: "nehmt", sie_Sie: "nehmen" },
+    tip: "Vowel change e -> i + double m"
   }
 ];
 

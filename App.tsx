@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { AppView, DifficultyLevel, VocabWord } from './types';
+import { AppView, DifficultyLevel, VocabWord, WordProgress } from './types';
 import { generateVocabulary } from './services/geminiService';
 import { LOCAL_VOCAB } from './data/vocab';
 import { loadData, saveData, KEYS } from './services/storage';
@@ -14,6 +13,7 @@ import SentenceBuilder from './components/SentenceBuilder';
 import BookMode from './components/BookMode';
 
 const SESSION_SIZE = 15; // Learning Chunk Size
+const MASTERY_THRESHOLD = 3; // Correct answers needed to master
 
 const AVAILABLE_CATEGORIES = Array.from(new Set(LOCAL_VOCAB.map(w => w.category))).filter(c => c !== 'Grammar' && c !== 'Basics');
 
@@ -29,31 +29,16 @@ const App: React.FC = () => {
   // App Loading State
   const [isInitializing, setIsInitializing] = useState(true);
 
-  // Favorites
+  // Data State
   const [favorites, setFavorites] = useState<VocabWord[]>([]);
+  const [vocabProgress, setVocabProgress] = useState<Record<string, WordProgress>>({});
 
   // Stats State
   const [correctStreak, setCorrectStreak] = useState(0);
   const [wrongStreak, setWrongStreak] = useState(0);
   const [sessionStats, setSessionStats] = useState({ correct: 0, wrong: 0 });
 
-  // Helper: Get a fresh batch of words
-  const getFreshBatch = (lvl: DifficultyLevel, category?: string): VocabWord[] => {
-    let pool = LOCAL_VOCAB.filter(w => {
-        if (lvl === DifficultyLevel.Beginner) return w.level === DifficultyLevel.Beginner; 
-        if (lvl === DifficultyLevel.Intermediate) return w.level === DifficultyLevel.Intermediate;
-        return w.level === DifficultyLevel.Advanced;
-    });
-
-    if (category) {
-        pool = pool.filter(w => w.category === category);
-    }
-
-    const shuffled = [...pool].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, SESSION_SIZE);
-  };
-
-  // INITIAL LOAD
+  // Load Initial Data
   useEffect(() => {
     const initApp = async () => {
         // Load Level
@@ -64,6 +49,10 @@ const App: React.FC = () => {
         const savedFavorites = await loadData<VocabWord[]>(KEYS.VOCAB_FAVORITES, []);
         setFavorites(savedFavorites);
 
+        // Load Progress (SRS)
+        const savedProgress = await loadData<Record<string, WordProgress>>(KEYS.VOCAB_PROGRESS, {});
+        setVocabProgress(savedProgress);
+
         // Load Current Session
         const savedWords = await loadData<VocabWord[]>(KEYS.VOCAB_WORDS, []);
         const savedIndex = await loadData<number>(KEYS.VOCAB_INDEX, 0);
@@ -72,10 +61,10 @@ const App: React.FC = () => {
             setWords(savedWords);
             setCurrentWordIndex(savedIndex);
         } else {
-            // New Start
-            const fresh = getFreshBatch(savedLevel as DifficultyLevel);
-            setWords(fresh);
-            setCurrentWordIndex(0);
+             // Don't auto-start a session on fresh load to allow menu choice, 
+             // but ensure state is clean
+             setWords([]);
+             setCurrentWordIndex(0);
         }
 
         setIsInitializing(false);
@@ -84,23 +73,13 @@ const App: React.FC = () => {
     initApp();
   }, []);
 
-  // PERSISTENCE EFFECT
-  // We use a debounce or just save on significant changes. 
-  // For simplicity in React, effects work well for state sync.
+  // Persistence Effects
+  useEffect(() => { if (!isInitializing) saveData(KEYS.VOCAB_LEVEL, level); }, [level, isInitializing]);
+  useEffect(() => { if (!isInitializing) saveData(KEYS.VOCAB_FAVORITES, favorites); }, [favorites, isInitializing]);
+  useEffect(() => { if (!isInitializing) saveData(KEYS.VOCAB_PROGRESS, vocabProgress); }, [vocabProgress, isInitializing]);
+  
   useEffect(() => {
     if (!isInitializing) {
-        saveData(KEYS.VOCAB_LEVEL, level);
-    }
-  }, [level, isInitializing]);
-
-  useEffect(() => {
-    if (!isInitializing) {
-        saveData(KEYS.VOCAB_FAVORITES, favorites);
-    }
-  }, [favorites, isInitializing]);
-
-  useEffect(() => {
-    if (!isInitializing && words.length > 0) {
         saveData(KEYS.VOCAB_WORDS, words);
         saveData(KEYS.VOCAB_INDEX, currentWordIndex);
     }
@@ -118,15 +97,52 @@ const App: React.FC = () => {
      });
   };
 
+  // Helper: Get a fresh batch of words, excluding MASTERED ones
   const startNewSession = async (category?: string) => {
       setLoadingWords(true);
       if (category) setCurrentTopic(category);
       else setCurrentTopic(null);
 
-      // AI Generation or Local Fallback
-      const newBatch = await generateVocabulary(level, category);
+      // 1. Get Pool based on Level & Category
+      let pool = LOCAL_VOCAB.filter(w => {
+        // Broad level filtering (Basic gets A1/A2, etc)
+        if (level === DifficultyLevel.Beginner) return w.level === DifficultyLevel.Beginner; 
+        if (level === DifficultyLevel.Intermediate) return w.level === DifficultyLevel.Intermediate;
+        return w.level === DifficultyLevel.Advanced;
+      });
+
+      if (category) {
+          pool = pool.filter(w => w.category === category);
+      }
+
+      // 2. Filter out MASTERED words (Success Count >= 3)
+      // We look up the word in vocabProgress.
+      const unmasteredPool = pool.filter(w => {
+          const progress = vocabProgress[w.german];
+          // If no progress exists, it's new (keep it). If successCount < 3, keep it.
+          return !progress || progress.successCount < MASTERY_THRESHOLD;
+      });
+
+      // 3. Selection Logic
+      let selectedWords: VocabWord[] = [];
+
+      if (unmasteredPool.length > 0) {
+          // Shuffle unmastered words
+          const shuffled = [...unmasteredPool].sort(() => 0.5 - Math.random());
+          selectedWords = shuffled.slice(0, SESSION_SIZE);
+      } else {
+          // Fallback: If everything is mastered in this category/level, 
+          // perform a "Review Session" of mastered words (or mix)
+          // so the user doesn't get an empty screen.
+          const shuffledAll = [...pool].sort(() => 0.5 - Math.random());
+          selectedWords = shuffledAll.slice(0, SESSION_SIZE);
+          // Optional: You could set a flag here to tell the user "Review Mode"
+      }
+
+      // 4. (Optional) If pool is too small, mix in some AI generation? 
+      // For now, sticking to local data ensures logic consistency.
       
-      setWords(newBatch);
+      setWords(selectedWords);
       setCurrentWordIndex(0);
       setCorrectStreak(0);
       setWrongStreak(0);
@@ -136,22 +152,57 @@ const App: React.FC = () => {
   };
 
   const handleCardResult = (difficulty: 'hard' | 'easy') => {
+    // 1. Update Session Stats
     if (difficulty === 'easy') {
         setSessionStats(prev => ({ ...prev, correct: prev.correct + 1 }));
+        if (learnMode !== 'favorites') {
+             setCorrectStreak(prev => prev + 1);
+             setWrongStreak(0);
+        }
     } else {
         setSessionStats(prev => ({ ...prev, wrong: prev.wrong + 1 }));
-    }
-
-    if (learnMode !== 'favorites') {
-        if (difficulty === 'easy') {
-            setCorrectStreak(prev => prev + 1);
-            setWrongStreak(0);
-        } else {
-            setWrongStreak(prev => prev + 1);
-            setCorrectStreak(0);
+        if (learnMode !== 'favorites') {
+             setWrongStreak(prev => prev + 1);
+             setCorrectStreak(0);
         }
     }
 
+    // 2. Update Long-term Mastery (SRS)
+    // Only update mastery in normal learning mode, not in "Favorites" review
+    if (learnMode !== 'favorites' && words[currentWordIndex]) {
+        const wordKey = words[currentWordIndex].german;
+        
+        setVocabProgress(prev => {
+            const current = prev[wordKey] || { 
+                id: wordKey, 
+                successCount: 0, 
+                isMastered: false, 
+                lastReview: 0 
+            };
+
+            let newSuccessCount = current.successCount;
+            
+            if (difficulty === 'easy') {
+                newSuccessCount += 1;
+            } else {
+                newSuccessCount = 0; // Reset streak on hard
+            }
+
+            const isNowMastered = newSuccessCount >= MASTERY_THRESHOLD;
+
+            return {
+                ...prev,
+                [wordKey]: {
+                    ...current,
+                    successCount: newSuccessCount,
+                    isMastered: isNowMastered,
+                    lastReview: Date.now()
+                }
+            };
+        });
+    }
+
+    // 3. Move Next
     const nextIndex = currentWordIndex + 1;
     setCurrentWordIndex(nextIndex);
   };
@@ -160,8 +211,7 @@ const App: React.FC = () => {
       return (
           <div className="min-h-screen bg-[#121212] flex flex-col items-center justify-center text-white">
               <div className="w-16 h-16 border-4 border-german-gold border-t-transparent rounded-full animate-spin mb-6"></div>
-              <h2 className="text-xl font-bold">Syncing Progress...</h2>
-              <p className="text-gray-500 mt-2">Connecting to Supabase</p>
+              <h2 className="text-xl font-bold">Lade DeutschFlow...</h2>
           </div>
       );
   }
@@ -169,11 +219,18 @@ const App: React.FC = () => {
   const renderContent = () => {
     if (currentView === AppView.Vocab) {
       if (learnMode === 'menu') {
+        const masteredCount = Object.values(vocabProgress).filter((p: WordProgress) => p.isMastered).length;
+        
         return (
           <div className="flex flex-col items-center justify-center min-h-full max-w-2xl mx-auto px-6 pb-20 pt-8">
              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 text-center">Learning Hub</h1>
              <p className="text-gray-500 dark:text-gray-400 mb-8 text-center">Your {level.split(' ')[0]} Path</p>
              
+             {/* Mastery Stats */}
+             <div className="mb-6 bg-green-50 dark:bg-green-900/10 px-4 py-2 rounded-full border border-green-100 dark:border-green-800 flex items-center gap-2">
+                 <span className="text-green-600 dark:text-green-400 text-sm font-bold">🏆 Words Mastered: {masteredCount}</span>
+             </div>
+
              <div className="grid gap-4 w-full max-w-md">
                 <button 
                   onClick={() => startNewSession()}
@@ -182,7 +239,7 @@ const App: React.FC = () => {
                    <div className="w-12 h-12 rounded-full bg-german-gold text-black flex items-center justify-center font-bold text-xl">🚀</div>
                    <div className="flex-1">
                       <h3 className="font-bold text-white text-lg">Daily Session</h3>
-                      <p className="text-sm text-gray-300">New AI Words (15)</p>
+                      <p className="text-sm text-gray-300">Learn new words (Excludes mastered)</p>
                    </div>
                 </button>
 
@@ -318,7 +375,7 @@ const App: React.FC = () => {
           ) : learnMode !== 'favorites' && loadingWords ? (
             <div className="flex flex-col items-center justify-center h-96 w-full max-w-sm bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800">
                <div className="w-12 h-12 border-4 border-german-gold border-t-transparent rounded-full animate-spin mb-4"></div>
-               <p className="text-gray-500 dark:text-gray-400 animate-pulse">Loading Session...</p>
+               <p className="text-gray-500 dark:text-gray-400 animate-pulse">Building Session...</p>
             </div>
           ) : (
              <div className="text-center bg-white dark:bg-[#1e1e1e] p-8 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-800 max-w-sm w-full">
@@ -343,12 +400,13 @@ const App: React.FC = () => {
                               setCurrentWordIndex(0);
                               setSessionStats({ correct: 0, wrong: 0 });
                           } else {
+                              // Infinite session logic: This will pull NEW words because logic now excludes mastered
                               startNewSession(currentTopic || undefined);
                           }
                       }} 
                       className="px-4 py-3 bg-german-gold text-black font-bold rounded-xl hover:bg-yellow-400 transition-colors shadow-lg shadow-yellow-400/20"
                    >
-                      {learnMode === 'favorites' ? 'Review Again' : 'Start New Session'}
+                      {learnMode === 'favorites' ? 'Review Again' : 'Start Next Session'}
                    </button>
                    <button 
                       onClick={() => setLearnMode('menu')}
@@ -395,8 +453,8 @@ const App: React.FC = () => {
                <h3 className="font-semibold mb-2 text-gray-900 dark:text-white">Statistics</h3>
                <div className="grid grid-cols-2 gap-4">
                    <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-xl text-center">
-                       <span className="block text-2xl font-bold text-green-600 dark:text-green-400">{correctStreak}</span>
-                       <span className="text-xs text-gray-500 dark:text-gray-400">Correct Streak</span>
+                       <span className="block text-2xl font-bold text-green-600 dark:text-green-400">{Object.values(vocabProgress).filter((p: WordProgress) => p.isMastered).length}</span>
+                       <span className="text-xs text-gray-500 dark:text-gray-400">Mastered Words</span>
                    </div>
                    <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl text-center">
                        <span className="block text-2xl font-bold text-blue-600 dark:text-blue-400">{LOCAL_VOCAB.length}</span>
@@ -414,7 +472,7 @@ const App: React.FC = () => {
               </button>
            </div>
            <div className="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800">
-             <p className="text-xs text-gray-400 text-center">DeutschFlow v2.1 • Sync Enabled</p>
+             <p className="text-xs text-gray-400 text-center">DeutschFlow v2.2 • SRS Enabled</p>
            </div>
          </div>
        </div>

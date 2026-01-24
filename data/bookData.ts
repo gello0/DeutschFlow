@@ -6,6 +6,7 @@ import { UNIT3_EXERCISES } from "./unit3";
 import { UNIT4_EXERCISES } from "./unit4";
 import { UNIT5_EXERCISES } from "./unit5";
 import { UNIT6_EXERCISES } from "./unit6";
+import { UNIT7_EXERCISES } from "./unit7";
 import { UNIT_REVIEW_1_6 } from "./unitReview1to6";
 
 export const BOOK_UNITS: BookUnit[] = [
@@ -86,48 +87,7 @@ export const BOOK_UNITS: BookUnit[] = [
     id: "unit-7",
     title: "Unit 7: Berufe",
     description: "Professions, workplace, and modal verbs (können/müssen).",
-    exercises: [
-      {
-        id: "u7-ex1",
-        type: "multiple-choice",
-        prompt: "What is a female teacher called?",
-        options: ["Lehrer", "Lehrerin", "Lehre"],
-        correctAnswer: "Lehrerin",
-        explanation: "Add '-in' to make most professions feminine."
-      },
-      {
-        id: "u7-ex2",
-        type: "fill-gap",
-        prompt: "Modal verb (können): 'I ___ speak English.'",
-        content: "Ich ______ Englisch sprechen.",
-        correctAnswer: "kann",
-        explanation: "Ich kann, du kannst, er kann."
-      },
-      {
-        id: "u7-ex3",
-        type: "fill-gap",
-        prompt: "Modal verb (müssen): 'We ___ work.'",
-        content: "Wir ______ arbeiten.",
-        correctAnswer: "müssen",
-        explanation: "Wir müssen (plural is regular)."
-      },
-      {
-        id: "u7-ex4",
-        type: "arrange",
-        prompt: "Word Order: 'I have to write an email.'",
-        content: "schreiben / Ich / E-Mail / muss / eine / .",
-        correctAnswer: "Ich muss eine E-Mail schreiben.",
-        explanation: "Conjugated modal verb (muss) in pos 2. Infinitive (schreiben) at the VERY END."
-      },
-      {
-        id: "u7-ex5",
-        type: "multiple-choice",
-        prompt: "What does 'Arbeitsgeber' mean?",
-        options: ["Employee", "Employer", "Worker"],
-        correctAnswer: "Employer",
-        explanation: "Geber = Giver (Employer). Nehmer = Taker (Employee)."
-      }
-    ]
+    exercises: UNIT7_EXERCISES
   },
 
   // ==========================================
