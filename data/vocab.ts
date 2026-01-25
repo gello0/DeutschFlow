@@ -28,8 +28,21 @@ export const parseLevel = (key: string): DifficultyLevel => {
 
 export const generateExample = (german: string, english: string, type: string, genderKey: string, category: string): { de: string, en: string } => {
     if (type === 'Verb') {
-        return { de: `Ich möchte ${german}.`, en: `I would like to ${english}.` };
+        // Special case for "sein" (to be) which is irregular in plural
+        if (german === 'sein') {
+            return { de: 'Wir sind hier.', en: 'We are here.' };
+        }
+        
+        // Clean up "to" from English infinitive for better sentence flow
+        // e.g. "to go" -> "We go" instead of "We to go"
+        const cleanEnglish = english.replace(/^to\s+/i, '');
+        
+        // Using "Wir" (We) + Infinitive usually creates a valid Simple Present sentence
+        // "müssen" -> "Wir müssen." (We must/have to.)
+        // "essen" -> "Wir essen." (We eat.)
+        return { de: `Wir ${german}.`, en: `We ${cleanEnglish}.` };
     }
+    
     const article = getArticle(genderKey);
     if (article) {
          const CapArticle = article.charAt(0).toUpperCase() + article.slice(1);

@@ -14,9 +14,16 @@ const Flashcard: React.FC<FlashcardProps> = ({ word, onResult, isFavorite, onTog
   const [isFlipped, setIsFlipped] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Ensure card is reset if word changes externally
+  // Reset card state and Auto-play audio when word changes
   useEffect(() => {
     setIsFlipped(false);
+    
+    // Auto-play audio with a slight delay for better UX
+    const timer = setTimeout(() => {
+        speakText(word.german);
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, [word]);
 
   const handleAudio = (e: React.MouseEvent, text: string) => {
