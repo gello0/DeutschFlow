@@ -12,6 +12,7 @@ import GrammarGuide from './components/GrammarGuide';
 import ChatTutor from './components/ChatTutor';
 import SentenceBuilder from './components/SentenceBuilder';
 import BookMode from './components/BookMode';
+import MasteredList from './components/MasteredList';
 
 const SESSION_SIZE = 15; // Learning Chunk Size
 const MASTERY_THRESHOLD = 3; // Correct answers needed to master
@@ -77,7 +78,21 @@ const App: React.FC = () => {
   // Persistence Effects
   useEffect(() => { if (!isInitializing) saveData(KEYS.VOCAB_LEVEL, level); }, [level, isInitializing]);
   useEffect(() => { if (!isInitializing) saveData(KEYS.VOCAB_FAVORITES, favorites); }, [favorites, isInitializing]);
-  useEffect(() => { if (!isInitializing) saveData(KEYS.VOCAB_PROGRESS, vocabProgress); }, [vocabProgress, isInitializing]);
+  
+  // Save detailed progress AND explicit mastered list
+  useEffect(() => { 
+    if (!isInitializing) {
+        // Save the detailed progress object
+        saveData(KEYS.VOCAB_PROGRESS, vocabProgress);
+
+        // Explicitly save just the list of mastered words for simpler cross-platform/db checks
+        const masteredList = (Object.values(vocabProgress) as WordProgress[])
+            .filter(p => p.isMastered)
+            .map(p => p.id);
+        
+        saveData(KEYS.VOCAB_MASTERED_LIST, masteredList);
+    }
+  }, [vocabProgress, isInitializing]);
   
   useEffect(() => {
     if (!isInitializing) {
@@ -96,6 +111,19 @@ const App: React.FC = () => {
             return [...prev, word];
         }
      });
+  };
+
+  const handleResetWord = (id: string) => {
+      setVocabProgress(prev => {
+          const newProgress = { ...prev };
+          // If we want to "delete" it from the known list entirely:
+          if (newProgress[id]) {
+               // We can simply remove the key, or reset it. 
+               // Deleting the key treats it as brand new.
+               delete newProgress[id];
+          }
+          return newProgress;
+      });
   };
 
   // Helper: Get a fresh batch of words, excluding MASTERED ones
@@ -228,9 +256,15 @@ const App: React.FC = () => {
              <p className="text-gray-500 dark:text-gray-400 mb-8 text-center">Your {level.split(' ')[0]} Path</p>
              
              {/* Mastery Stats */}
-             <div className="mb-6 bg-green-50 dark:bg-green-900/10 px-4 py-2 rounded-full border border-green-100 dark:border-green-800 flex items-center gap-2">
+             <button 
+                 onClick={() => setCurrentView(AppView.MasteredList)}
+                 className="mb-6 bg-green-50 dark:bg-green-900/10 px-4 py-2 rounded-full border border-green-100 dark:border-green-800 flex items-center gap-2 hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors"
+             >
                  <span className="text-green-600 dark:text-green-400 text-sm font-bold">🏆 Words Mastered: {masteredCount}</span>
-             </div>
+                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                 </svg>
+             </button>
 
              <div className="grid gap-4 w-full max-w-md">
                 <button 
@@ -428,6 +462,7 @@ const App: React.FC = () => {
     if (currentView === AppView.Drills) return <div className="h-full pt-4"><ConjugationDrill level={level} /></div>;
     if (currentView === AppView.Numbers) return <div className="h-full pt-4"><NumberGame level={level} /></div>;
     if (currentView === AppView.SentenceBuilder) return <div className="h-full pt-4"><SentenceBuilder level={level} /></div>;
+    if (currentView === AppView.MasteredList) return <div className="h-full pt-4"><MasteredList progress={vocabProgress} onResetWord={handleResetWord} onBack={() => setCurrentView(AppView.Settings)} /></div>;
 
     return (
        <div className="max-w-md mx-auto px-4 py-8">
@@ -453,9 +488,17 @@ const App: React.FC = () => {
            <div className="mt-8">
                <h3 className="font-semibold mb-2 text-gray-900 dark:text-white">Statistics</h3>
                <div className="grid grid-cols-2 gap-4">
-                   <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-xl text-center">
-                       <span className="block text-2xl font-bold text-green-600 dark:text-green-400">{Object.values(vocabProgress).filter((p: WordProgress) => p.isMastered).length}</span>
-                       <span className="text-xs text-gray-500 dark:text-gray-400">Mastered Words</span>
+                   <div 
+                     onClick={() => setCurrentView(AppView.MasteredList)}
+                     className="bg-green-50 dark:bg-green-900/20 p-4 rounded-xl text-center cursor-pointer hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors group"
+                   >
+                       <span className="block text-2xl font-bold text-green-600 dark:text-green-400 group-hover:scale-110 transition-transform">{Object.values(vocabProgress).filter((p: WordProgress) => p.isMastered).length}</span>
+                       <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center justify-center gap-1">
+                          Mastered Words
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                       </span>
                    </div>
                    <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl text-center">
                        <span className="block text-2xl font-bold text-blue-600 dark:text-blue-400">{LOCAL_VOCAB.length}</span>

@@ -9,7 +9,8 @@ export const KEYS = {
   VERB_PROGRESS: 'verb_progress',   // Verb Drill SRS
   BOOK_PROGRESS: 'book_progress',
   SENTENCE_PROGRESS: 'sentence_progress',
-  JOURNAL_ENTRIES: 'journal_entries'
+  JOURNAL_ENTRIES: 'journal_entries',
+  VOCAB_MASTERED_LIST: 'deutsch_mastered' // Explicit list of mastered words
 };
 
 const API_ENDPOINT = '/api/storage';

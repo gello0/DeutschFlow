@@ -46,7 +46,8 @@ export enum AppView {
   Chat = 'chat',
   SentenceBuilder = 'sentences',
   Settings = 'settings',
-  Book = 'book' // New Book Mode
+  Book = 'book', // New Book Mode
+  MasteredList = 'mastered_list' // New Mastered List Mode
 }
 
 export interface ChatMessage {
