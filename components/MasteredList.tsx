@@ -1,4 +1,3 @@
-
 import React, { useMemo } from 'react';
 import { WordProgress } from '../types';
 import { LOCAL_VOCAB } from '../data/vocab';
@@ -13,7 +12,7 @@ const MasteredList: React.FC<MasteredListProps> = ({ progress, onResetWord, onBa
   
   const masteredList = useMemo(() => {
     // 1. Get all IDs that are mastered
-    const ids = Object.values(progress)
+    const ids = (Object.values(progress) as WordProgress[])
         .filter(p => p.isMastered)
         .map(p => p.id);
 

@@ -14,13 +14,21 @@ const Flashcard: React.FC<FlashcardProps> = ({ word, onResult, isFavorite, onTog
   const [isFlipped, setIsFlipped] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
+  // Helper to get text to speak (includes article for nouns)
+  const getSpeakableText = (w: VocabWord) => {
+    if (w.type === 'Noun' && w.gender) {
+        return `${w.gender} ${w.german}`;
+    }
+    return w.german;
+  };
+
   // Reset card state and Auto-play audio when word changes
   useEffect(() => {
     setIsFlipped(false);
     
     // Auto-play audio with a slight delay for better UX
     const timer = setTimeout(() => {
-        speakText(word.german);
+        speakText(getSpeakableText(word));
     }, 500);
 
     return () => clearTimeout(timer);
@@ -94,7 +102,7 @@ const Flashcard: React.FC<FlashcardProps> = ({ word, onResult, isFavorite, onTog
           <p className="text-gray-400 dark:text-gray-500 mt-4 text-sm">(Tap to flip)</p>
           
           <button 
-            onClick={(e) => handleAudio(e, word.german)}
+            onClick={(e) => handleAudio(e, getSpeakableText(word))}
             className="absolute bottom-6 right-6 p-3 rounded-full bg-german-gold/10 hover:bg-german-gold/30 text-yellow-700 dark:text-yellow-500 transition-colors"
             title="Listen to word"
           >

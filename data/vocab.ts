@@ -27,28 +27,67 @@ export const parseLevel = (key: string): DifficultyLevel => {
 };
 
 export const generateExample = (german: string, english: string, type: string, genderKey: string, category: string): { de: string, en: string } => {
+    // 1. Verbs
     if (type === 'Verb') {
-        // Special case for "sein" (to be) which is irregular in plural
-        if (german === 'sein') {
-            return { de: 'Wir sind hier.', en: 'We are here.' };
+        if (german === 'sein') return { de: 'Ich bin glücklich.', en: 'I am happy.' };
+        if (german === 'haben') return { de: 'Ich habe eine Idee.', en: 'I have an idea.' };
+        if (german === 'gehen') return { de: 'Ich gehe nach Hause.', en: 'I am going home.' };
+        if (german === 'essen') return { de: 'Ich esse gern Pizza.', en: 'I like eating pizza.' };
+        if (german === 'trinken') return { de: 'Ich trinke Wasser.', en: 'I drink water.' };
+        if (german === 'kommen') return { de: 'Woher kommst du?', en: 'Where do you come from?' };
+        if (german === 'wohnen') return { de: 'Ich wohne in Berlin.', en: 'I live in Berlin.' };
+        
+        // Default: I like to ...
+        const cleanEnglish = english.replace(/^to\s+/i, '');
+        return { de: `Ich ${german} gern.`, en: `I like to ${cleanEnglish}.` };
+    }
+
+    // 2. Nouns
+    if (type === 'Noun') {
+        const article = getArticle(genderKey);
+        const CapArticle = article ? article.charAt(0).toUpperCase() + article.slice(1) : '';
+
+        // Category Groups
+        if (['Food', 'Drinks', 'Fruit', 'Vegetables'].includes(category)) {
+             return { de: `${CapArticle} ${german} ist lecker.`, en: `The ${english} is yummy.` };
+        }
+        if (['Clothing'].includes(category)) {
+             return { de: `${CapArticle} ${german} ist neu.`, en: `The ${english} is new.` };
+        }
+        if (['Family'].includes(category)) {
+             const poss = (genderKey === 'f' || genderKey === 'p') ? 'Meine' : 'Mein';
+             return { de: `${poss} ${german} ist nett.`, en: `My ${english} is nice.` };
+        }
+        if (['Body'].includes(category)) {
+             const poss = (genderKey === 'f' || genderKey === 'p') ? 'Meine' : 'Mein';
+             return { de: `${poss} ${german} tut weh.`, en: `My ${english} hurts.` };
+        }
+        if (['Professions'].includes(category)) {
+             return { de: `Er arbeitet als ${german}.`, en: `He works as a ${english}.` };
+        }
+        if (['Animals'].includes(category)) {
+             return { de: `${CapArticle} ${german} ist süß.`, en: `The ${english} is cute.` };
+        }
+        if (['Time'].includes(category)) {
+             return { de: `${CapArticle} ${german} ist wichtig.`, en: `The ${english} is important.` };
+        }
+        if (['City', 'Home', 'Classroom', 'Office', 'Places'].includes(category) || category === 'Objects') {
+             if (article) return { de: `Wo ist ${article} ${german}?`, en: `Where is the ${english}?` };
         }
         
-        // Clean up "to" from English infinitive for better sentence flow
-        // e.g. "to go" -> "We go" instead of "We to go"
-        const cleanEnglish = english.replace(/^to\s+/i, '');
-        
-        // Using "Wir" (We) + Infinitive usually creates a valid Simple Present sentence
-        // "müssen" -> "Wir müssen." (We must/have to.)
-        // "essen" -> "Wir essen." (We eat.)
-        return { de: `Wir ${german}.`, en: `We ${cleanEnglish}.` };
+        // General Noun Fallback
+        if (article) {
+             return { de: `${CapArticle} ${german} ist da.`, en: `The ${english} is there.` };
+        }
     }
-    
-    const article = getArticle(genderKey);
-    if (article) {
-         const CapArticle = article.charAt(0).toUpperCase() + article.slice(1);
-         return { de: `${CapArticle} ${german} ist da.`, en: `The ${english} is there.` };
+
+    // 3. Adjectives / Adverbs
+    if (type === 'Adjective' || type === 'Adverb') {
+        return { de: `Das ist sehr ${german}.`, en: `That is very ${english}.` };
     }
-    return { de: `${german} ist wichtig.`, en: `${english} is important.` };
+
+    // 4. Default
+    return { de: `${german} ist gut.`, en: `${english} is good.` };
 };
 
 export const LOCAL_VERBS: VerbDrill[] = [
