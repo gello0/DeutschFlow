@@ -7,7 +7,8 @@ export interface LocalVocabEntry extends VocabWord {
   category: string;
 }
 
-// Helpers
+// === GRAMMAR HELPERS ===
+
 export const getArticle = (key: string): string => {
   switch (key) {
     case 'm': return 'der';
@@ -18,6 +19,31 @@ export const getArticle = (key: string): string => {
   }
 };
 
+const getIndefinite = (key: string): string => {
+    if (key === 'f') return 'eine';
+    if (key === 'p') return 'viele'; // Plural indefinite often "many" or no article, simplified here
+    return 'ein';
+};
+
+const getPossessive = (key: string): string => {
+    if (key === 'f' || key === 'p') return 'meine';
+    return 'mein';
+};
+
+const getAkkusativeDefinite = (key: string): string => {
+    if (key === 'm') return 'den';
+    if (key === 'f') return 'die';
+    if (key === 'n') return 'das';
+    return 'die';
+};
+
+const getAkkusativeIndefinite = (key: string): string => {
+    if (key === 'm') return 'einen';
+    if (key === 'f') return 'eine';
+    if (key === 'n') return 'ein';
+    return 'viele';
+};
+
 export const parseLevel = (key: string): DifficultyLevel => {
   switch(key) {
       case '2': return DifficultyLevel.Intermediate;
@@ -26,8 +52,15 @@ export const parseLevel = (key: string): DifficultyLevel => {
   }
 };
 
+// === RANDOMIZATION HELPERS ===
+
+const pickRandom = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
+
+// Cap first letter
+const cap = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+
 export const generateExample = (german: string, english: string, type: string, genderKey: string, category: string): { de: string, en: string } => {
-    // 1. Verbs
+    // 1. Verbs (Custom Logic + Randomization)
     if (type === 'Verb') {
         if (german === 'sein') return { de: 'Ich bin glücklich.', en: 'I am happy.' };
         if (german === 'haben') return { de: 'Ich habe eine Idee.', en: 'I have an idea.' };
@@ -35,59 +68,185 @@ export const generateExample = (german: string, english: string, type: string, g
         if (german === 'essen') return { de: 'Ich esse gern Pizza.', en: 'I like eating pizza.' };
         if (german === 'trinken') return { de: 'Ich trinke Wasser.', en: 'I drink water.' };
         if (german === 'kommen') return { de: 'Woher kommst du?', en: 'Where do you come from?' };
-        if (german === 'wohnen') return { de: 'Ich wohne in Berlin.', en: 'I live in Berlin.' };
         
-        // Default: I like to ...
         const cleanEnglish = english.replace(/^to\s+/i, '');
-        return { de: `Ich ${german} gern.`, en: `I like to ${cleanEnglish}.` };
+        const verbTemplates = [
+            { de: `Ich ${german} gern.`, en: `I like to ${cleanEnglish}.` },
+            { de: `Wir ${german} oft.`, en: `We ${cleanEnglish} often.` },
+            { de: `Kannst du ${german}?`, en: `Can you ${cleanEnglish}?` },
+            { de: `Ich muss jetzt ${german}.`, en: `I have to ${cleanEnglish} now.` },
+            { de: `Sie ${german} nicht.`, en: `She does not ${cleanEnglish}.` }
+        ];
+        return pickRandom(verbTemplates);
     }
 
     // 2. Nouns
     if (type === 'Noun') {
-        const article = getArticle(genderKey);
-        const CapArticle = article ? article.charAt(0).toUpperCase() + article.slice(1) : '';
-
-        // Category Groups
-        if (['Food', 'Drinks', 'Fruit', 'Vegetables'].includes(category)) {
-             return { de: `${CapArticle} ${german} ist lecker.`, en: `The ${english} is yummy.` };
-        }
-        if (['Clothing'].includes(category)) {
-             return { de: `${CapArticle} ${german} ist neu.`, en: `The ${english} is new.` };
-        }
-        if (['Family'].includes(category)) {
-             const poss = (genderKey === 'f' || genderKey === 'p') ? 'Meine' : 'Mein';
-             return { de: `${poss} ${german} ist nett.`, en: `My ${english} is nice.` };
-        }
-        if (['Body'].includes(category)) {
-             const poss = (genderKey === 'f' || genderKey === 'p') ? 'Meine' : 'Mein';
-             return { de: `${poss} ${german} tut weh.`, en: `My ${english} hurts.` };
-        }
-        if (['Professions'].includes(category)) {
-             return { de: `Er arbeitet als ${german}.`, en: `He works as a ${english}.` };
-        }
-        if (['Animals'].includes(category)) {
-             return { de: `${CapArticle} ${german} ist süß.`, en: `The ${english} is cute.` };
-        }
-        if (['Time'].includes(category)) {
-             return { de: `${CapArticle} ${german} ist wichtig.`, en: `The ${english} is important.` };
-        }
-        if (['City', 'Home', 'Classroom', 'Office', 'Places'].includes(category) || category === 'Objects') {
-             if (article) return { de: `Wo ist ${article} ${german}?`, en: `Where is the ${english}?` };
-        }
+        const art = getArticle(genderKey);
+        const artIndef = getIndefinite(genderKey);
+        const artAkk = getAkkusativeDefinite(genderKey);
+        const artAkkIndef = getAkkusativeIndefinite(genderKey);
+        const poss = getPossessive(genderKey);
         
-        // General Noun Fallback
-        if (article) {
-             return { de: `${CapArticle} ${german} ist da.`, en: `The ${english} is there.` };
+        const CapArt = cap(art);
+
+        // -- CATEGORY TEMPLATES --
+
+        // Languages (Specific Override)
+        if (category === 'Basics' && (german.endsWith('isch') || german === 'Deutsch')) {
+             return { de: `Ich spreche ${german}.`, en: `I speak ${english}.` };
+        }
+
+        // Countries
+        if (category === 'Countries') {
+             if (genderKey === 'f' || genderKey === 'p') { // Die Schweiz, Die USA
+                 return { de: `Ich lebe in ${genderKey === 'p' ? 'den' : 'der'} ${german}.`, en: `I live in ${english}.` };
+             }
+             const countryTemplates = [
+                 { de: `Ich reise nach ${german}.`, en: `I am traveling to ${english}.` },
+                 { de: `Ich komme aus ${german}.`, en: `I come from ${english}.` },
+                 { de: `${german} ist wunderschön.`, en: `${english} is beautiful.` }
+             ];
+             return pickRandom(countryTemplates);
+        }
+
+        // Food & Drink
+        if (['Food', 'Drinks', 'Fruit', 'Vegetables'].includes(category)) {
+             const isDrink = ['Kaffee', 'Tee', 'Wasser', 'Saft', 'Bier', 'Wein', 'Milch', 'Cola', 'Getränk'].includes(german) || category === 'Drinks';
+             const verb = isDrink ? 'trinke' : 'esse';
+             const verbEn = isDrink ? 'drink' : 'eat';
+             
+             const foodTemplates = [
+                 { de: `Ich ${verb} gerne ${german}.`, en: `I like to ${verbEn} ${english}.` },
+                 { de: `${CapArt} ${german} schmeckt lecker.`, en: `The ${english} tastes yummy.` },
+                 { de: `Ich möchte ${german} kaufen.`, en: `I want to buy ${english}.` },
+                 { de: `Haben wir noch ${german}?`, en: `Do we still have ${english}?` },
+                 { de: `Der Preis für ${german} ist gut.`, en: `The price for ${english} is good.` },
+                 { de: `Ich brauche ${artAkkIndef} ${german}.`, en: `I need a ${english}.` }
+             ];
+             return pickRandom(foodTemplates);
+        }
+
+        // Family
+        if (category === 'Family') {
+             const familyTemplates = [
+                 { de: `Das ist ${poss} ${german}.`, en: `That is my ${english}.` },
+                 { de: `${poss} ${german} heißt Anna.`, en: `My ${english} is called Anna.` }, // Or generic name
+                 { de: `Ich besuche ${poss === 'meine' ? 'meine' : 'meinen'} ${german}.`, en: `I am visiting my ${english}.` },
+                 { de: `Wo wohnt ${poss} ${german}?`, en: `Where does my ${english} live?` }
+             ];
+             return pickRandom(familyTemplates);
+        }
+
+        // Clothing
+        if (category === 'Clothing') {
+             const clothTemplates = [
+                 { de: `Ich trage ${artAkkIndef} ${german}.`, en: `I am wearing a ${english}.` },
+                 { de: `${CapArt} ${german} passt mir gut.`, en: `The ${english} fits me well.` },
+                 { de: `${CapArt} ${german} ist zu teuer.`, en: `The ${english} is too expensive.` },
+                 { de: `Ich suche ${artAkkIndef} ${german}.`, en: `I am looking for a ${english}.` },
+                 { de: `Wie findest du ${artAkk} ${german}?`, en: `How do you find the ${english}?` }
+             ];
+             return pickRandom(clothTemplates);
+        }
+
+        // Body
+        if (category === 'Body') {
+             const bodyTemplates = [
+                 { de: `${poss} ${german} tut weh.`, en: `My ${english} hurts.` },
+                 { de: `${CapArt} ${german} ist verletzt.`, en: `The ${english} is injured.` },
+                 { de: `Er hat große ${german === 'Auge' || german === 'Ohr' || german === 'Hand' ? german + 'n' : german}.`, en: `He has big ${english}s.` } // Rough pluralization approximation for variety
+             ];
+             return pickRandom(bodyTemplates);
+        }
+
+        // Places / Buildings / Rooms
+        if (['City', 'Home', 'Places'].includes(category)) {
+             const placeTemplates = [
+                 { de: `Das ist ${artIndef} ${german}.`, en: `That is a ${english}.` },
+                 { de: `${CapArt} ${german} ist sehr groß.`, en: `The ${english} is very big.` },
+                 { de: `Wo ist hier ${artIndef} ${german}?`, en: `Where is a ${english} here?` },
+                 { de: `Wir sind im ${german}.`, en: `We are in the ${english}.` }, // Grammatically loose for "im" vs "in der", but acceptable for A1 variety
+                 { de: `Ich sehe ${artAkk} ${german}.`, en: `I see the ${english}.` }
+             ];
+             // Correction for "im": if feminine, it should be "in der". 
+             if (genderKey === 'f') {
+                 placeTemplates[3] = { de: `Wir sind in der ${german}.`, en: `We are in the ${english}.` };
+             }
+             
+             return pickRandom(placeTemplates);
+        }
+
+        // Objects / Technology / Office
+        if (['Objects', 'Technology', 'Office', 'Classroom', 'Money', 'Shopping'].includes(category)) {
+             const objTemplates = [
+                 { de: `Wo ist ${art} ${german}?`, en: `Where is the ${english}?` },
+                 { de: `Ich brauche ${artAkkIndef} ${german}.`, en: `I need a ${english}.` },
+                 { de: `${CapArt} ${german} funktioniert nicht.`, en: `The ${english} does not work.` },
+                 { de: `Hast du ${artAkkIndef} ${german}?`, en: `Do you have a ${english}?` },
+                 { de: `${CapArt} ${german} ist neu.`, en: `The ${english} is new.` },
+                 { de: `Das ist ${poss} ${german}.`, en: `That is my ${english}.` }
+             ];
+             return pickRandom(objTemplates);
+        }
+
+        // Professions
+        if (category === 'Professions') {
+             return { de: `Ich arbeite als ${german}.`, en: `I work as a ${english}.` };
+        }
+
+        // Time
+        if (category === 'Time') {
+             if (['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'].includes(german)) {
+                 return pickRandom([
+                     { de: `Am ${german} habe ich frei.`, en: `On ${english} I am free.` },
+                     { de: `Bis ${german}!`, en: `See you ${english}!` },
+                     { de: `Der Kurs ist am ${german}.`, en: `The course is on ${english}.` }
+                 ]);
+             }
+             if (['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'].includes(german)) {
+                 return { de: `Im ${german} ist es kalt.`, en: `In ${english} it is cold.` };
+             }
+             return { de: `${CapArt} ${german} ist wichtig.`, en: `The ${english} is important.` };
+        }
+
+        // -- FALLBACK FOR ANY NOUN --
+        if (art) {
+             const fallbackTemplates = [
+                 { de: `Wo ist ${art} ${german}?`, en: `Where is the ${english}?` },
+                 { de: `Da ist ${art} ${german}.`, en: `There is the ${english}.` },
+                 { de: `Ich suche ${artAkk} ${german}.`, en: `I am looking for the ${english}.` },
+                 { de: `${CapArt} ${german} ist interessant.`, en: `The ${english} is interesting.` },
+                 { de: `Ich habe ${artAkkIndef} ${german}.`, en: `I have a ${english}.` }
+             ];
+             return pickRandom(fallbackTemplates);
         }
     }
 
     // 3. Adjectives / Adverbs
     if (type === 'Adjective' || type === 'Adverb') {
-        return { de: `Das ist sehr ${german}.`, en: `That is very ${english}.` };
+        if (category === 'Colors') {
+            const nouns = ['Das Auto', 'Die Blume', 'Der Himmel', 'Das Haus', 'Mein T-Shirt'];
+            const noun = pickRandom(nouns);
+            return { de: `${noun} ist ${german}.`, en: `The ${noun.split(' ')[1].toLowerCase()} is ${english}.` };
+        }
+        
+        const genericAdjTemplates = [
+            { de: `Das ist sehr ${german}.`, en: `That is very ${english}.` },
+            { de: `Bist du ${german}?`, en: `Are you ${english}?` },
+            { de: `Ich finde das ${german}.`, en: `I find that ${english}.` },
+            { de: `Alles ist ${german}.`, en: `Everything is ${english}.` }
+        ];
+        return pickRandom(genericAdjTemplates);
     }
 
-    // 4. Default
-    return { de: `${german} ist gut.`, en: `${english} is good.` };
+    // 4. Fallback
+    if (german === 'wer') return { de: 'Wer bist du?', en: 'Who are you?' };
+    if (german === 'wie') return { de: 'Wie geht es dir?', en: 'How are you?' };
+    if (german === 'woher') return { de: 'Woher kommst du?', en: 'Where do you come from?' };
+    if (german === 'was') return { de: 'Was ist das?', en: 'What is that?' };
+    
+    return { de: `${german}!`, en: `${english}!` };
 };
 
 export const LOCAL_VERBS: VerbDrill[] = [
