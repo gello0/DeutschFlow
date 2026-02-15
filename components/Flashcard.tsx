@@ -34,6 +34,17 @@ const Flashcard: React.FC<FlashcardProps> = ({ word, onResult, isFavorite, onTog
     return () => clearTimeout(timer);
   }, [word]);
 
+  // Auto-play example sentence when flipped to back
+  useEffect(() => {
+    if (isFlipped) {
+        // Wait for flip animation (approx 0.6s total) to be visible
+        const timer = setTimeout(() => {
+            speakText(word.exampleGerman);
+        }, 400);
+        return () => clearTimeout(timer);
+    }
+  }, [isFlipped, word]);
+
   const handleAudio = (e: React.MouseEvent, text: string) => {
     e.stopPropagation();
     speakText(text);
