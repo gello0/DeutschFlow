@@ -8,9 +8,10 @@ interface FlashcardProps {
   onResult: (difficulty: 'hard' | 'easy') => void;
   isFavorite: boolean;
   onToggleFavorite: (word: VocabWord) => void;
+  disableAutoPlay?: boolean;
 }
 
-const Flashcard: React.FC<FlashcardProps> = ({ word, onResult, isFavorite, onToggleFavorite }) => {
+const Flashcard: React.FC<FlashcardProps> = ({ word, onResult, isFavorite, onToggleFavorite, disableAutoPlay }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -26,24 +27,25 @@ const Flashcard: React.FC<FlashcardProps> = ({ word, onResult, isFavorite, onTog
   useEffect(() => {
     setIsFlipped(false);
     
-    // Auto-play audio with a slight delay for better UX
-    const timer = setTimeout(() => {
-        speakText(getSpeakableText(word));
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [word]);
+    if (!disableAutoPlay) {
+        // Auto-play audio with a slight delay for better UX
+        const timer = setTimeout(() => {
+            speakText(getSpeakableText(word));
+        }, 500);
+        return () => clearTimeout(timer);
+    }
+  }, [word, disableAutoPlay]);
 
   // Auto-play example sentence when flipped to back
   useEffect(() => {
-    if (isFlipped) {
+    if (isFlipped && !disableAutoPlay) {
         // Wait for flip animation (approx 0.6s total) to be visible
         const timer = setTimeout(() => {
             speakText(word.exampleGerman);
         }, 400);
         return () => clearTimeout(timer);
     }
-  }, [isFlipped, word]);
+  }, [isFlipped, word, disableAutoPlay]);
 
   const handleAudio = (e: React.MouseEvent, text: string) => {
     e.stopPropagation();
@@ -133,37 +135,39 @@ const Flashcard: React.FC<FlashcardProps> = ({ word, onResult, isFavorite, onTog
             <p className="text-sm text-gray-300 border-t border-gray-600 pt-2">{word.exampleEnglish}</p>
           </div>
 
-          {/* Controls Container */}
-          <div className="absolute bottom-6 w-full px-6 flex justify-between items-center">
-             <div className="flex gap-3 flex-1 mr-4">
+          {/* Controls Container - Hide in Auto Mode via CSS or logic? Logic handling parent */}
+          {!disableAutoPlay && (
+            <div className="absolute bottom-6 w-full px-6 flex justify-between items-center">
+                <div className="flex gap-3 flex-1 mr-4">
+                    <button 
+                    onClick={(e) => handleNext(e, 'hard')}
+                    className="flex-1 py-3 px-2 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-200 text-sm font-semibold transition-colors border border-red-500/30"
+                    disabled={isAnimating}
+                    >
+                    Hard
+                    </button>
+                    <button 
+                    onClick={(e) => handleNext(e, 'easy')}
+                    className="flex-1 py-3 px-2 rounded-xl bg-green-500/20 hover:bg-green-500/30 text-green-300 text-sm font-semibold transition-colors border border-green-500/30"
+                    disabled={isAnimating}
+                    >
+                    Easy
+                    </button>
+                </div>
+                
+                {/* Audio Button */}
                 <button 
-                  onClick={(e) => handleNext(e, 'hard')}
-                  className="flex-1 py-3 px-2 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-200 text-sm font-semibold transition-colors border border-red-500/30"
-                  disabled={isAnimating}
+                    onClick={(e) => { e.stopPropagation(); handleAudio(e, word.exampleGerman); }}
+                    className="p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors flex-none"
+                    title="Play example sentence"
+                    aria-label="Play example sentence"
                 >
-                  Hard
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                    </svg>
                 </button>
-                <button 
-                  onClick={(e) => handleNext(e, 'easy')}
-                  className="flex-1 py-3 px-2 rounded-xl bg-green-500/20 hover:bg-green-500/30 text-green-300 text-sm font-semibold transition-colors border border-green-500/30"
-                  disabled={isAnimating}
-                >
-                  Easy
-                </button>
-             </div>
-             
-             {/* Audio Button - Positioned to match front card */}
-             <button 
-                onClick={(e) => { e.stopPropagation(); handleAudio(e, word.exampleGerman); }}
-                className="p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors flex-none"
-                title="Play example sentence"
-                aria-label="Play example sentence"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                </svg>
-              </button>
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

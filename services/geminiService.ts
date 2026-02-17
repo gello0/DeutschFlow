@@ -77,7 +77,7 @@ export const generateVocabulary = async (
         }
     }
 
-    // Fallback to Local Data
+    // Fallback to local
     let pool = LOCAL_VOCAB.filter(w => {
         if (level === DifficultyLevel.Beginner) return w.level === DifficultyLevel.Beginner; 
         if (level === DifficultyLevel.Intermediate) return w.level === DifficultyLevel.Intermediate;
@@ -103,8 +103,8 @@ export const generateVerbDrill = async (level: DifficultyLevel): Promise<VerbDri
     return null;
 };
 
-// 3. Text to Speech (Gemini TTS with Browser Fallback)
-export const speakText = async (text: string) => {
+// 3. Text to Speech (Gemini TTS with Browser Fallback) - UPDATED to return Promise
+export const speakText = async (text: string): Promise<void> => {
     const ai = getClient();
     
     // Attempt Gemini TTS first
@@ -117,7 +117,7 @@ export const speakText = async (text: string) => {
                     responseModalities: [Modality.AUDIO],
                     speechConfig: {
                         voiceConfig: {
-                            prebuiltVoiceConfig: { voiceName: 'Kore' }, // 'Kore' is often good for German, or let model decide
+                            prebuiltVoiceConfig: { voiceName: 'Kore' }, // 'Kore' is often good for German
                         },
                     },
                 },
@@ -142,11 +142,13 @@ export const speakText = async (text: string) => {
                     1,
                 );
                 
-                const source = outputAudioContext.createBufferSource();
-                source.buffer = audioBuffer;
-                source.connect(outputAudioContext.destination);
-                source.start();
-                return; // Success, exit function
+                return new Promise((resolve) => {
+                    const source = outputAudioContext.createBufferSource();
+                    source.buffer = audioBuffer;
+                    source.connect(outputAudioContext.destination);
+                    source.onended = () => resolve();
+                    source.start();
+                });
             }
         } catch (e) {
             console.warn("Gemini TTS failed, falling back to browser TTS:", e);
@@ -155,18 +157,26 @@ export const speakText = async (text: string) => {
 
     // Fallback: Browser Native TTS
     if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'de-DE';
-        utterance.rate = 0.9;
-        
-        const voices = window.speechSynthesis.getVoices();
-        const germanVoice = voices.find(v => v.lang.includes('de'));
-        if (germanVoice) {
-            utterance.voice = germanVoice;
-        }
-        window.speechSynthesis.speak(utterance);
+        return new Promise((resolve) => {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'de-DE';
+            utterance.rate = 0.9;
+            
+            const voices = window.speechSynthesis.getVoices();
+            const germanVoice = voices.find(v => v.lang.includes('de'));
+            if (germanVoice) {
+                utterance.voice = germanVoice;
+            }
+            
+            utterance.onend = () => resolve();
+            utterance.onerror = () => resolve(); // Resolve on error too to prevent hanging
+            
+            window.speechSynthesis.speak(utterance);
+        });
     }
+    
+    return Promise.resolve(); // Resolve immediately if no TTS support
 };
 
 // 4. Chat Tutor AI
@@ -201,7 +211,7 @@ export const sendMessageToTutor = async (
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash-lite', // Lite for chat speed
+            model: 'gemini-2.5-flash-lite',
             contents: contents,
             config: {
                 systemInstruction: systemInstruction,
@@ -242,17 +252,15 @@ export const generateSentencePuzzle = async (
     await new Promise(resolve => setTimeout(resolve, 200));
 
     // 1. First, try to find a local sentence that hasn't been seen yet/recently
-    // Filter sentences that are NOT in the exclude list
-    const availableLocal = LOCAL_SENTENCES.filter(s => !excludeIds.includes(s.german)); // Using german text as ID for local
+    const availableLocal = LOCAL_SENTENCES.filter(s => !excludeIds.includes(s.german));
 
     if (availableLocal.length > 0) {
-        // Pick random from available
         const randomIndex = Math.floor(Math.random() * availableLocal.length);
         const s = availableLocal[randomIndex];
-        return { id: s.german, german: s.german, english: s.english }; // Use german text as ID
+        return { id: s.german, german: s.german, english: s.english };
     }
 
-    // 2. If we ran out of local sentences, try AI or reuse local
+    // 2. If we ran out of local sentences, try AI
     const ai = getClient();
     if (ai) {
         const prompt = `Generate a simple German sentence appropriate for level ${level}. 
@@ -290,7 +298,7 @@ export const generateSentencePuzzle = async (
         }
     }
 
-    // 3. Absolute fallback (reuse any local)
+    // 3. Fallback
     if (LOCAL_SENTENCES.length > 0) {
         const randomIndex = Math.floor(Math.random() * LOCAL_SENTENCES.length);
         const s = LOCAL_SENTENCES[randomIndex];

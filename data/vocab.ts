@@ -155,7 +155,7 @@ export const generateExample = (german: string, english: string, type: string, g
              const bodyTemplates = [
                  { de: `${poss} ${german} tut weh.`, en: `My ${english} hurts.` },
                  { de: `${CapArt} ${german} ist verletzt.`, en: `The ${english} is injured.` },
-                 { de: `Er hat große ${german === 'Auge' || german === 'Ohr' || german === 'Hand' ? german + 'n' : german}.`, en: `He has big ${english}s.` } // Rough pluralization approximation for variety
+                 { de: `Er hat große ${german === 'Auge' || german === 'Ohr' || german === 'Hand' ? german + 'n' : german}.`, en: `He has big ${english}s.` } 
              ];
              return pickRandom(bodyTemplates);
         }
@@ -166,14 +166,12 @@ export const generateExample = (german: string, english: string, type: string, g
                  { de: `Das ist ${artIndef} ${german}.`, en: `That is a ${english}.` },
                  { de: `${CapArt} ${german} ist sehr groß.`, en: `The ${english} is very big.` },
                  { de: `Wo ist hier ${artIndef} ${german}?`, en: `Where is a ${english} here?` },
-                 { de: `Wir sind im ${german}.`, en: `We are in the ${english}.` }, // Grammatically loose for "im" vs "in der", but acceptable for A1 variety
+                 { de: `Wir sind im ${german}.`, en: `We are in the ${english}.` },
                  { de: `Ich sehe ${artAkk} ${german}.`, en: `I see the ${english}.` }
              ];
-             // Correction for "im": if feminine, it should be "in der". 
              if (genderKey === 'f') {
                  placeTemplates[3] = { de: `Wir sind in der ${german}.`, en: `We are in the ${english}.` };
              }
-             
              return pickRandom(placeTemplates);
         }
 
@@ -195,19 +193,60 @@ export const generateExample = (german: string, english: string, type: string, g
              return { de: `Ich arbeite als ${german}.`, en: `I work as a ${english}.` };
         }
 
-        // Time
+        // Feelings
+        if (category === 'Feelings') {
+            if (german === 'Liebe') return { de: 'Liebe ist alles.', en: 'Love is everything.' };
+            if (german === 'Angst') return { de: 'Ich habe keine Angst.', en: 'I have no fear.' };
+            if (german === 'Glück') return { de: 'Viel Glück!', en: 'Good luck!' };
+            if (german === 'Spaß') return { de: 'Das macht Spaß!', en: 'That is fun!' };
+            if (german === 'Trauer') return { de: 'Er zeigt keine Trauer.', en: 'He shows no grief.' };
+            if (german === 'Hoffnung') return { de: 'Ich habe Hoffnung.', en: 'I have hope.' };
+            return { de: `Ich fühle ${german}.`, en: `I feel ${english}.` };
+        }
+
+        // Time (Specific Logic)
         if (category === 'Time') {
+             // Weekdays
              if (['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'].includes(german)) {
                  return pickRandom([
                      { de: `Am ${german} habe ich frei.`, en: `On ${english} I am free.` },
                      { de: `Bis ${german}!`, en: `See you ${english}!` },
-                     { de: `Der Kurs ist am ${german}.`, en: `The course is on ${english}.` }
+                     { de: `Der Kurs ist am ${german}.`, en: `The course is on ${english}.` },
+                     { de: `Kommst du am ${german}?`, en: `Are you coming on ${english}?` }
                  ]);
              }
+             // Months
              if (['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'].includes(german)) {
-                 return { de: `Im ${german} ist es kalt.`, en: `In ${english} it is cold.` };
+                 return pickRandom([
+                    { de: `Im ${german} ist es kalt.`, en: `In ${english} it is cold.` },
+                    { de: `Mein Geburtstag ist im ${german}.`, en: `My birthday is in ${english}.` },
+                    { de: `Wir fahren im ${german} weg.`, en: `We are going away in ${english}.` }
+                 ]);
              }
-             return { de: `${CapArt} ${german} ist wichtig.`, en: `The ${english} is important.` };
+             // Seasons
+             if (['Frühling','Sommer','Herbst','Winter'].includes(german)) {
+                 return pickRandom([
+                    { de: `Ich mag den ${german}.`, en: `I like ${english}.` },
+                    { de: `Im ${german} ist das Wetter schön.`, en: `In ${english} the weather is nice.` }
+                 ]);
+             }
+             
+             // Specific Time Nouns
+             if (german === 'Zeit') return { de: 'Ich habe keine Zeit.', en: 'I have no time.' };
+             if (german === 'Uhr') return pickRandom([
+                { de: 'Wie viel Uhr ist es?', en: 'What time is it?' },
+                { de: 'Ich habe eine neue Uhr.', en: 'I have a new watch.' }
+             ]);
+             if (german === 'Tag') return { de: 'Guten Tag!', en: 'Good day!' };
+             if (german === 'Woche') return { de: 'Die Woche hat sieben Tage.', en: 'The week has seven days.' };
+             if (german === 'Jahr') return { de: 'Frohes neues Jahr!', en: 'Happy New Year!' };
+             if (german === 'Morgen') return { de: 'Guten Morgen!', en: 'Good morning!' };
+             if (german === 'Abend') return { de: 'Guten Abend!', en: 'Good evening!' };
+             if (german === 'Nacht') return { de: 'Gute Nacht!', en: 'Good night!' };
+             if (german === 'Minute') return { de: 'Warte eine Minute bitte.', en: 'Wait a minute please.' };
+             if (german === 'Stunde') return { de: 'Der Film dauert eine Stunde.', en: 'The movie lasts an hour.' };
+
+             return { de: `Der ${german} vergeht schnell.`, en: `The ${english} passes quickly.` };
         }
 
         // -- FALLBACK FOR ANY NOUN --
@@ -216,7 +255,7 @@ export const generateExample = (german: string, english: string, type: string, g
                  { de: `Wo ist ${art} ${german}?`, en: `Where is the ${english}?` },
                  { de: `Da ist ${art} ${german}.`, en: `There is the ${english}.` },
                  { de: `Ich suche ${artAkk} ${german}.`, en: `I am looking for the ${english}.` },
-                 { de: `${CapArt} ${german} ist interessant.`, en: `The ${english} is interesting.` },
+                 { de: `Gefällt dir ${art} ${german}?`, en: `Do you like the ${english}?` },
                  { de: `Ich habe ${artAkkIndef} ${german}.`, en: `I have a ${english}.` }
              ];
              return pickRandom(fallbackTemplates);
