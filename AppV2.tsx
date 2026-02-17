@@ -41,6 +41,10 @@ const AppV2: React.FC = () => {
   const [wrongStreak, setWrongStreak] = useState(0);
   const [sessionStats, setSessionStats] = useState({ correct: 0, wrong: 0 });
 
+  // Autonomous Mode Settings
+  const [autoRepetitions, setAutoRepetitions] = useState(3);
+  const [isInfinityMode, setIsInfinityMode] = useState(false);
+
   // Load Initial Data
   useEffect(() => {
     const initApp = async () => {
@@ -95,13 +99,19 @@ const AppV2: React.FC = () => {
     let isCancelled = false;
 
     const runAutoLoop = async () => {
-        if (learnMode !== 'autonomous' || loadingWords || words.length === 0) return;
+        if (learnMode !== 'autonomous' || loadingWords) return;
         
         // Check if session finished
-        if (currentWordIndex >= words.length) {
-            // Let the UI render 'Session Complete'
+        if (words.length > 0 && currentWordIndex >= words.length) {
+            if (isInfinityMode) {
+                // Auto-start next session
+                await startNewSession(currentTopic || undefined, 'autonomous');
+            }
+            // Else: Let the UI render 'Session Complete'
             return; 
         }
+
+        if (words.length === 0) return;
 
         const word = words[currentWordIndex];
         const speakableGerman = word.type === 'Noun' && word.gender ? `${word.gender} ${word.german}` : word.german;
@@ -109,8 +119,8 @@ const AppV2: React.FC = () => {
         // Initial delay
         await new Promise(r => setTimeout(r, 800));
 
-        // 3 Repetitions Loop
-        for (let i = 0; i < 3; i++) {
+        // Repetitions Loop
+        for (let i = 0; i < autoRepetitions; i++) {
             if (isCancelled || learnMode !== 'autonomous') return;
             
             // Speak German (Default de-DE)
@@ -137,7 +147,7 @@ const AppV2: React.FC = () => {
     }
 
     return () => { isCancelled = true; };
-  }, [learnMode, currentWordIndex, words, loadingWords]);
+  }, [learnMode, currentWordIndex, words, loadingWords, autoRepetitions, isInfinityMode]);
 
 
   const toggleFavorite = (word: VocabWord) => {
@@ -389,7 +399,7 @@ const AppV2: React.FC = () => {
             <div className="flex flex-col items-center justify-center gap-1">
                 {learnMode === 'autonomous' && (
                     <span className="text-[10px] uppercase font-bold tracking-widest bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded-full animate-pulse mb-2">
-                        Hands-Free Mode
+                        {isInfinityMode ? '∞ Infinite Loop' : `Hands-Free • ${autoRepetitions}x`}
                     </span>
                 )}
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -416,13 +426,43 @@ const AppV2: React.FC = () => {
                 />
                 
                 {learnMode === 'autonomous' && (
-                    <div className="mt-6">
-                        <button 
-                            onClick={() => setLearnMode('menu')}
-                            className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-6 py-2 rounded-full font-bold text-sm hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors border border-red-200 dark:border-red-900/30"
-                        >
-                            Stop Auto-Play
-                        </button>
+                    <div className="mt-6 flex flex-col items-center gap-4">
+                        {/* Repetition Controls */}
+                        <div className="flex gap-2 bg-gray-100 dark:bg-gray-800 p-1 rounded-xl">
+                          {[2, 3, 4, 5].map(num => (
+                            <button
+                              key={num}
+                              onClick={() => setAutoRepetitions(num)}
+                              className={`px-3 py-2 rounded-lg text-sm font-bold transition-all ${
+                                autoRepetitions === num 
+                                  ? 'bg-white dark:bg-gray-600 text-black dark:text-white shadow-sm scale-105' 
+                                  : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                              }`}
+                            >
+                              x{num}
+                            </button>
+                          ))}
+                        </div>
+
+                        {/* Control Actions */}
+                        <div className="flex gap-3">
+                            <button 
+                                onClick={() => setIsInfinityMode(!isInfinityMode)}
+                                className={`px-4 py-2 rounded-full font-bold text-sm transition-all border flex items-center gap-2
+                                    ${isInfinityMode 
+                                        ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800 ring-2 ring-purple-400/30' 
+                                        : 'bg-white dark:bg-transparent text-gray-500 border-gray-200 dark:border-gray-700 hover:border-gray-400'}`}
+                            >
+                                <span>∞</span> {isInfinityMode ? 'Infinity On' : 'Infinity Mode'}
+                            </button>
+
+                            <button 
+                                onClick={() => setLearnMode('menu')}
+                                className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-6 py-2 rounded-full font-bold text-sm hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors border border-red-200 dark:border-red-900/30"
+                            >
+                                Stop
+                            </button>
+                        </div>
                     </div>
                 )}
             </div>
