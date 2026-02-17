@@ -103,11 +103,13 @@ export const generateVerbDrill = async (level: DifficultyLevel): Promise<VerbDri
     return null;
 };
 
-// 3. Text to Speech (Gemini TTS with Browser Fallback) - UPDATED to return Promise
-export const speakText = async (text: string): Promise<void> => {
+// 3. Text to Speech (Gemini TTS with Browser Fallback) - UPDATED to return Promise and accept Language
+export const speakText = async (text: string, lang: string = 'de-DE'): Promise<void> => {
     const ai = getClient();
     
-    // Attempt Gemini TTS first
+    // Attempt Gemini TTS first (Only for German generally, but model handles mixed well. 
+    // If lang is explicitly english, we might prefer browser or specific config, 
+    // but the current model configuration uses 'Kore' which is English-native anyway, so it handles English text well).
     if (ai) {
         try {
             const response = await ai.models.generateContent({
@@ -117,7 +119,7 @@ export const speakText = async (text: string): Promise<void> => {
                     responseModalities: [Modality.AUDIO],
                     speechConfig: {
                         voiceConfig: {
-                            prebuiltVoiceConfig: { voiceName: 'Kore' }, // 'Kore' is often good for German
+                            prebuiltVoiceConfig: { voiceName: 'Kore' }, // 'Kore' is often good for German & English
                         },
                     },
                 },
@@ -160,13 +162,17 @@ export const speakText = async (text: string): Promise<void> => {
         return new Promise((resolve) => {
             window.speechSynthesis.cancel();
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'de-DE';
+            utterance.lang = lang; // Use the passed language ('de-DE' or 'en-US')
             utterance.rate = 0.9;
             
+            // Try to find a voice that matches the requested language code
             const voices = window.speechSynthesis.getVoices();
-            const germanVoice = voices.find(v => v.lang.includes('de'));
-            if (germanVoice) {
-                utterance.voice = germanVoice;
+            // Look for 'de' or 'en' based on input
+            const targetLangShort = lang.substring(0, 2); 
+            const matchingVoice = voices.find(v => v.lang.includes(targetLangShort));
+            
+            if (matchingVoice) {
+                utterance.voice = matchingVoice;
             }
             
             utterance.onend = () => resolve();

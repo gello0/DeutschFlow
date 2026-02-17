@@ -113,14 +113,14 @@ const AppV2: React.FC = () => {
         for (let i = 0; i < 3; i++) {
             if (isCancelled || learnMode !== 'autonomous') return;
             
-            // Speak German
-            await speakText(speakableGerman);
+            // Speak German (Default de-DE)
+            await speakText(speakableGerman, 'de-DE');
             if (isCancelled || learnMode !== 'autonomous') return;
             
             await new Promise(r => setTimeout(r, 800)); // Pause between languages
 
-            // Speak English
-            await speakText(word.english);
+            // Speak English (Explicit en-US)
+            await speakText(word.english, 'en-US');
             if (isCancelled || learnMode !== 'autonomous') return;
             
             await new Promise(r => setTimeout(r, 1200)); // Pause between repetitions
